@@ -23,7 +23,8 @@ import io.gravitee.policy.api.annotations.OnRequest;
 import io.gravitee.policy.transformheaders.configuration.TransformHeadersPolicyConfiguration;
 
 /**
- * @author David BRASSELY (brasseld at gmail.com)
+ * @author David BRASSELY (david.brassely at graviteesource.com)
+ * @author GraviteeSource Team
  */
 public class TransformHeadersPolicy {
 
@@ -38,16 +39,6 @@ public class TransformHeadersPolicy {
 
     @OnRequest
     public void onRequest(Request request, Response response, ExecutionContext executionContext, PolicyChain policyChain) {
-        // Remove request headers
-        if (transformHeadersPolicyConfiguration.getRemoveHeaders() != null) {
-            transformHeadersPolicyConfiguration.getRemoveHeaders()
-                    .forEach(headerName -> {
-                        if (headerName != null && ! headerName.trim().isEmpty()) {
-                            request.headers().remove(headerName);
-                        }
-                    });
-        }
-
         // Add or update request headers
         if (transformHeadersPolicyConfiguration.getAddHeaders() != null) {
             transformHeadersPolicyConfiguration.getAddHeaders().forEach(
@@ -62,7 +53,16 @@ public class TransformHeadersPolicy {
                             }
                         }
                     });
+        }
 
+        // Remove request headers
+        if (transformHeadersPolicyConfiguration.getRemoveHeaders() != null) {
+            transformHeadersPolicyConfiguration.getRemoveHeaders()
+                    .forEach(headerName -> {
+                        if (headerName != null && ! headerName.trim().isEmpty()) {
+                            request.headers().remove(headerName);
+                        }
+                    });
         }
 
         // Apply next policy in chain

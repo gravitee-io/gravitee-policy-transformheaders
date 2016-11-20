@@ -21,13 +21,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author David BRASSELY (brasseld at gmail.com)
+ * @author David BRASSELY (david.brassely at graviteesource.com)
+ * @author GraviteeSource Team
  */
 public class TransformHeadersPolicyConfiguration implements PolicyConfiguration {
+
+    private PolicyScope scope = PolicyScope.REQUEST;
 
     private List<String> removeHeaders = new ArrayList<>();
 
     private List<HttpHeader> addHeaders = new ArrayList<>();
+
+    public PolicyScope getScope() {
+        return scope;
+    }
+
+    public void setScope(PolicyScope scope) {
+        this.scope = scope;
+    }
 
     public List<String> getRemoveHeaders() {
         return removeHeaders;

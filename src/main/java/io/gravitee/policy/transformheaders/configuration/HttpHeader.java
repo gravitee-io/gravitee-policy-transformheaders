@@ -18,13 +18,23 @@ package io.gravitee.policy.transformheaders.configuration;
 import java.util.Objects;
 
 /**
- * @author David BRASSELY (brasseld at gmail.com)
+ * @author David BRASSELY (david.brassely at graviteesource.com)
+ * @author GraviteeSource Team
  */
 public class HttpHeader {
 
     private String name;
 
     private String value;
+
+    public HttpHeader() {
+
+    }
+
+    public HttpHeader(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
 
     public String getName() {
         return name;

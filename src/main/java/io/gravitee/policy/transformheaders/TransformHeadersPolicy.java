@@ -15,11 +15,14 @@
  */
 package io.gravitee.policy.transformheaders;
 
+import io.gravitee.common.http.HttpHeaders;
 import io.gravitee.gateway.api.ExecutionContext;
 import io.gravitee.gateway.api.Request;
 import io.gravitee.gateway.api.Response;
 import io.gravitee.policy.api.PolicyChain;
 import io.gravitee.policy.api.annotations.OnRequest;
+import io.gravitee.policy.api.annotations.OnResponse;
+import io.gravitee.policy.transformheaders.configuration.PolicyScope;
 import io.gravitee.policy.transformheaders.configuration.TransformHeadersPolicyConfiguration;
 
 /**
@@ -39,17 +42,39 @@ public class TransformHeadersPolicy {
 
     @OnRequest
     public void onRequest(Request request, Response response, ExecutionContext executionContext, PolicyChain policyChain) {
-        // Add or update request headers
+        if (transformHeadersPolicyConfiguration.getScope() == null || transformHeadersPolicyConfiguration.getScope() == PolicyScope.REQUEST) {
+            // Do transform
+            transform(request.headers(), executionContext);
+        }
+
+        // Apply next policy in chain
+        policyChain.doNext(request, response);
+    }
+
+    @OnResponse
+    public void onResponse(Request request, Response response, ExecutionContext executionContext, PolicyChain policyChain) {
+        if (transformHeadersPolicyConfiguration.getScope() == PolicyScope.RESPONSE) {
+            // Do transform
+            transform(response.headers(), executionContext);
+        }
+
+        // Apply next policy in chain
+        policyChain.doNext(request, response);
+    }
+
+    void transform(HttpHeaders httpHeaders, ExecutionContext executionContext) {
+        // Add or update response headers
         if (transformHeadersPolicyConfiguration.getAddHeaders() != null) {
             transformHeadersPolicyConfiguration.getAddHeaders().forEach(
                     header -> {
-                        if (header.getName() != null && ! header.getName().trim().isEmpty()) {
+                        if (header.getName() != null && !header.getName().trim().isEmpty()) {
                             try {
                                 String extValue = (header.getValue() != null) ?
                                         executionContext.getTemplateEngine().convert(header.getValue()) : null;
-                                request.headers().set(header.getName(), extValue);
+                                httpHeaders.set(header.getName(), extValue);
                             } catch (Exception ex) {
                                 // Do nothing
+                                ex.printStackTrace();
                             }
                         }
                     });
@@ -59,13 +84,10 @@ public class TransformHeadersPolicy {
         if (transformHeadersPolicyConfiguration.getRemoveHeaders() != null) {
             transformHeadersPolicyConfiguration.getRemoveHeaders()
                     .forEach(headerName -> {
-                        if (headerName != null && ! headerName.trim().isEmpty()) {
-                            request.headers().remove(headerName);
+                        if (headerName != null && !headerName.trim().isEmpty()) {
+                            httpHeaders.remove(headerName);
                         }
                     });
         }
-
-        // Apply next policy in chain
-        policyChain.doNext(request, response);
     }
 }

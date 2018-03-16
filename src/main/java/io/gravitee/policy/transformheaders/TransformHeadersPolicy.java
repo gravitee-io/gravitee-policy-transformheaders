@@ -71,7 +71,9 @@ public class TransformHeadersPolicy {
                             try {
                                 String extValue = (header.getValue() != null) ?
                                         executionContext.getTemplateEngine().convert(header.getValue()) : null;
-                                httpHeaders.set(header.getName(), extValue);
+                                if (extValue != null) {
+                                    httpHeaders.set(header.getName(), extValue);
+                                }
                             } catch (Exception ex) {
                                 // Do nothing
                                 ex.printStackTrace();

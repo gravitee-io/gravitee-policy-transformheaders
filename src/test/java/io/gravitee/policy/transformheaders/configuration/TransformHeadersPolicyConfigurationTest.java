@@ -23,12 +23,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
+ * @author Nicolas GERAUD (nicolas.geraud at graviteesource.com)
  * @author GraviteeSource Team
  */
 public class TransformHeadersPolicyConfigurationTest {
@@ -39,8 +38,9 @@ public class TransformHeadersPolicyConfigurationTest {
                 load("/io/gravitee/policy/transformheaders/configuration/transformheaders01.json", TransformHeadersPolicyConfiguration.class);
 
         assertEquals(PolicyScope.REQUEST, configuration.getScope());
-        assertNotEquals(null, configuration.getAddHeaders());
-        assertNotEquals(null, configuration.getRemoveHeaders());
+        assertNotNull(configuration.getAddHeaders());
+        assertNotNull(configuration.getRemoveHeaders());
+        assertNull(configuration.getWhitelistHeaders());
 
         assertEquals(1, configuration.getAddHeaders().size());
         assertEquals(1, configuration.getRemoveHeaders().size());
@@ -52,8 +52,9 @@ public class TransformHeadersPolicyConfigurationTest {
                 load("/io/gravitee/policy/transformheaders/configuration/transformheaders02.json", TransformHeadersPolicyConfiguration.class);
 
         assertEquals(PolicyScope.RESPONSE, configuration.getScope());
-        assertNotEquals(null, configuration.getAddHeaders());
-        assertNotEquals(null, configuration.getRemoveHeaders());
+        assertNotNull(configuration.getAddHeaders());
+        assertNotNull(configuration.getRemoveHeaders());
+        assertNull(configuration.getWhitelistHeaders());
 
         assertEquals(1, configuration.getAddHeaders().size());
         assertEquals(1, configuration.getRemoveHeaders().size());
@@ -65,11 +66,25 @@ public class TransformHeadersPolicyConfigurationTest {
                 load("/io/gravitee/policy/transformheaders/configuration/transformheaders03.json", TransformHeadersPolicyConfiguration.class);
 
         assertEquals(PolicyScope.RESPONSE, configuration.getScope());
-        assertNotEquals(null, configuration.getAddHeaders());
-        assertNotEquals(null, configuration.getRemoveHeaders());
+        assertNotNull(configuration.getAddHeaders());
+        assertNotNull(configuration.getRemoveHeaders());
+        assertNull(configuration.getWhitelistHeaders());
 
         assertEquals(2, configuration.getAddHeaders().size());
         assertEquals(1, configuration.getRemoveHeaders().size());
+    }
+
+    @Test
+    public void test_transformHeaders04() throws IOException {
+        TransformHeadersPolicyConfiguration configuration =
+                load("/io/gravitee/policy/transformheaders/configuration/transformheaders04.json", TransformHeadersPolicyConfiguration.class);
+
+        assertEquals(PolicyScope.RESPONSE, configuration.getScope());
+        assertNull(configuration.getAddHeaders());
+        assertNull(configuration.getRemoveHeaders());
+        assertNotNull(configuration.getWhitelistHeaders());
+
+        assertEquals(2, configuration.getWhitelistHeaders().size());
     }
 
     private <T> T load(String resource, Class<T> type) throws IOException {

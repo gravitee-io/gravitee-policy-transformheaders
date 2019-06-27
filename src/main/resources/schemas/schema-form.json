@@ -18,6 +18,16 @@
         "title": "Header"
       }
     },
+    "whitelistHeaders": {
+      "type": "array",
+      "title": "Headers to keep",
+      "description": "Works like a whitelist. All other headers will be removed.",
+      "items": {
+        "type": "string",
+        "description": "Name of the header",
+        "title": "Header"
+      }
+    },
     "addHeaders" : {
       "type" : "array",
       "title": "Add / update headers",

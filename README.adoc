@@ -24,6 +24,7 @@ You can override these HTTP headers by:
 
 * Adding or updating list of headers
 * Removing them individually
+* Defining a whitelist
 
 [source, json]
 .Sample
@@ -37,6 +38,10 @@ You can override these HTTP headers by:
     ],
     "removeHeaders": [
         "X-Gravitee-TransactionId"
+    ],
+    "whitelistHeaders": [
+        "Content-Type",
+        "Content-Length"
     ],
     "scope": "REQUEST"
 }

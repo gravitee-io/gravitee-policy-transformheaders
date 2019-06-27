@@ -25,8 +25,12 @@ import io.gravitee.policy.api.annotations.OnResponse;
 import io.gravitee.policy.transformheaders.configuration.PolicyScope;
 import io.gravitee.policy.transformheaders.configuration.TransformHeadersPolicyConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
+ * @author Nicolas GERAUD (nicolas.geraud at graviteesource.com)
  * @author GraviteeSource Team
  */
 public class TransformHeadersPolicy {
@@ -82,14 +86,25 @@ public class TransformHeadersPolicy {
                     });
         }
 
-        // Remove request headers
-        if (transformHeadersPolicyConfiguration.getRemoveHeaders() != null) {
-            transformHeadersPolicyConfiguration.getRemoveHeaders()
-                    .forEach(headerName -> {
-                        if (headerName != null && !headerName.trim().isEmpty()) {
-                            httpHeaders.remove(headerName);
-                        }
-                    });
+        // verify the whitelist
+        List<String> headersToRemove = transformHeadersPolicyConfiguration.getRemoveHeaders() == null
+                ? new ArrayList<>()
+                : new ArrayList<>(transformHeadersPolicyConfiguration.getRemoveHeaders());
+
+        if (httpHeaders != null && transformHeadersPolicyConfiguration.getWhitelistHeaders() != null
+                && !transformHeadersPolicyConfiguration.getWhitelistHeaders().isEmpty()) {
+            httpHeaders.keySet().forEach(headerName -> {
+                if (!transformHeadersPolicyConfiguration.getWhitelistHeaders().contains(headerName)) {
+                    headersToRemove.add(headerName);
+                }
+            });
         }
+
+        // Remove request headers
+        headersToRemove.forEach(headerName -> {
+            if (headerName != null && !headerName.trim().isEmpty()) {
+                httpHeaders.remove(headerName);
+            }
+        });
     }
 }

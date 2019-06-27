@@ -33,16 +33,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-//import io.gravitee.reporter.api.http.RequestMetrics;
-
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
+ * @author Nicolas GERAUD (nicolas.geraud at graviteesource.com)
  * @author GraviteeSource Team
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -77,7 +76,6 @@ public class TransformHeadersPolicyTest {
 
         transformHeadersPolicy = new TransformHeadersPolicy(transformHeadersPolicyConfiguration);
         when(executionContext.getTemplateEngine()).thenReturn(templateEngine);
-        //when(request.metrics()).thenReturn(RequestMetrics.on(System.currentTimeMillis()).build());
         when(request.headers()).thenReturn(requestHttpHeaders);
         when(response.headers()).thenReturn(responseHtpHeaders);
         when(templateEngine.convert(any(String.class))).thenAnswer(returnsFirstArg());
@@ -133,6 +131,7 @@ public class TransformHeadersPolicyTest {
     public void testOnResponse_addHeader() {
         // Prepare
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
+        when(transformHeadersPolicyConfiguration.getRemoveHeaders()).thenReturn(null);
         when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(Collections.singletonList(
                 new HttpHeader("X-Gravitee-Test", "Value")));
 
@@ -171,7 +170,7 @@ public class TransformHeadersPolicyTest {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertEquals(null, requestHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertNull(requestHttpHeaders.getFirst("X-Gravitee-Test"));
     }
 
     @Test
@@ -186,7 +185,7 @@ public class TransformHeadersPolicyTest {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertEquals(null, responseHtpHeaders.getFirst("X-Gravitee-Test"));
+        assertNull(responseHtpHeaders.getFirst("X-Gravitee-Test"));
     }
 
     @Test
@@ -200,7 +199,7 @@ public class TransformHeadersPolicyTest {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertEquals(null, requestHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertNull(requestHttpHeaders.getFirst("X-Gravitee-Test"));
     }
 
     @Test
@@ -215,7 +214,7 @@ public class TransformHeadersPolicyTest {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertEquals(null, requestHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertNull(requestHttpHeaders.getFirst("X-Gravitee-Test"));
     }
 
     @Test
@@ -236,7 +235,7 @@ public class TransformHeadersPolicyTest {
     @Test
     public void testOnResponse_updateHeader() {
         // Prepare
-        requestHttpHeaders.set("X-Gravitee-Test", "Initial");
+        responseHtpHeaders.set("X-Gravitee-Test", "Initial");
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
         when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(Collections.singletonList(
                 new HttpHeader("X-Gravitee-Test", "Value")));
@@ -261,14 +260,15 @@ public class TransformHeadersPolicyTest {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertEquals(null, requestHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertNull(requestHttpHeaders.getFirst("X-Gravitee-Test"));
     }
 
     @Test
     public void testOnResponse_removeHeader() {
         // Prepare
-        requestHttpHeaders.set("X-Gravitee-Test", "Initial");
+        responseHtpHeaders.set("X-Gravitee-Test", "Initial");
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
+        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(null);
         when(transformHeadersPolicyConfiguration.getRemoveHeaders()).thenReturn(Collections.singletonList(
                 "X-Gravitee-Test"));
 
@@ -277,6 +277,91 @@ public class TransformHeadersPolicyTest {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertEquals(null, responseHtpHeaders.getFirst("X-Gravitee-Test"));
+        assertNull(responseHtpHeaders.getFirst("X-Gravitee-Test"));
+    }
+
+    @Test
+    public void testOnResponse_removeHeaderAndWhiteList() {
+        // Prepare
+        responseHtpHeaders.set("X-Gravitee-ToRemove", "Initial");
+        responseHtpHeaders.set("X-Gravitee-White", "Initial");
+        responseHtpHeaders.set("X-Gravitee-Black", "Initial");
+        when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
+        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(null);
+        when(transformHeadersPolicyConfiguration.getRemoveHeaders()).thenReturn(Collections.singletonList(
+                "X-Gravitee-ToRemove"));
+        when(transformHeadersPolicyConfiguration.getWhitelistHeaders()).thenReturn(Collections.singletonList(
+                "X-Gravitee-White"));
+
+        // Run
+        transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);
+
+        // Verify
+        verify(policyChain).doNext(request, response);
+        assertNull(responseHtpHeaders.getFirst("X-Gravitee-ToRemove"));
+        assertNull(responseHtpHeaders.getFirst("X-Gravitee-Black"));
+        assertNotNull(responseHtpHeaders.getFirst("X-Gravitee-White"));
+    }
+
+    @Test
+    public void testOnResponse_doNothing() {
+        // Prepare
+        responseHtpHeaders.set("X-Gravitee-Test", "Initial");
+        when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
+
+        // Run
+        transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);
+
+        // Verify
+        verify(policyChain).doNext(request, response);
+        assertNotNull(responseHtpHeaders.getFirst("X-Gravitee-Test"));
+    }
+
+    @Test
+    public void testOnRequest_doNothing() {
+        // Prepare
+        requestHttpHeaders.set("X-Gravitee-Test", "Initial");
+        when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.REQUEST);
+
+        // Run
+        transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);
+
+        // Verify
+        verify(policyChain).doNext(request, response);
+        assertNotNull(requestHttpHeaders.getFirst("X-Gravitee-Test"));
+    }
+
+    @Test
+    public void testOnResponse_whitelistHeader() {
+        // Prepare
+        responseHtpHeaders.set("X-Walter", "Initial");
+        responseHtpHeaders.set("X-White", "Initial");
+        when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
+        when(transformHeadersPolicyConfiguration.getWhitelistHeaders()).thenReturn(Collections.singletonList("X-White"));
+
+        // Run
+        transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);
+
+        // Verify
+        verify(policyChain).doNext(request, response);
+        assertNull(responseHtpHeaders.getFirst("X-Walter"));
+        assertNotNull(responseHtpHeaders.getFirst("X-White"));
+    }
+
+    @Test
+    public void testOnRequest_whitelistHeader() {
+        // Prepare
+        requestHttpHeaders.set("X-Walter", "Initial");
+        requestHttpHeaders.set("X-White", "Initial");
+        when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.REQUEST);
+        when(transformHeadersPolicyConfiguration.getWhitelistHeaders()).thenReturn(Collections.singletonList("X-White"));
+
+        // Run
+        transformHeadersPolicy.onRequest(request, response, executionContext, policyChain);
+
+        // Verify
+        verify(policyChain).doNext(request, response);
+        assertNull(requestHttpHeaders.getFirst("X-Walter"));
+        assertNotNull(requestHttpHeaders.getFirst("X-White"));
     }
 }

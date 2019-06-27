@@ -22,15 +22,18 @@ import java.util.List;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
+ * @author Nicolas GERAUD (nicolas.geraud at graviteesource.com)
  * @author GraviteeSource Team
  */
 public class TransformHeadersPolicyConfiguration implements PolicyConfiguration {
 
     private PolicyScope scope = PolicyScope.REQUEST;
 
-    private List<String> removeHeaders = new ArrayList<>();
+    private List<String> removeHeaders = null;
 
-    private List<HttpHeader> addHeaders = new ArrayList<>();
+    private List<HttpHeader> addHeaders = null;
+
+    private List<String> whitelistHeaders = null;
 
     public PolicyScope getScope() {
         return scope;
@@ -54,5 +57,13 @@ public class TransformHeadersPolicyConfiguration implements PolicyConfiguration 
 
     public void setAddHeaders(List<HttpHeader> addHeaders) {
         this.addHeaders = addHeaders;
+    }
+
+    public List<String> getWhitelistHeaders() {
+        return whitelistHeaders;
+    }
+
+    public void setWhitelistHeaders(List<String> whitelistHeaders) {
+        this.whitelistHeaders = whitelistHeaders;
     }
 }

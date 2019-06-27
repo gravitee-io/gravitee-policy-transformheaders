@@ -1,0 +1,7 @@
+{
+  "scope": "RESPONSE",
+  "whitelistHeaders": [
+    "X-Walter",
+    "X-White"
+  ]
+}

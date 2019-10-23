@@ -39,7 +39,11 @@
           "name" : {
             "title": "Name",
             "description": "Name of the header",
-            "type" : "string"
+            "type" : "string",
+            "pattern" : "^\\S*$",
+            "validationMessage": {
+              "202": "Header name must not contain spaces."
+            }
           },
           "value" : {
             "title": "Value",

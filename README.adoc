@@ -1,4 +1,4 @@
-= Transform Headers Policy
+= Transform headers policy
 
 ifdef::env-github[]
 image:https://ci.gravitee.io/buildStatus/icon?job=gravitee-io/gravitee-policy-transformheaders/master["Build status", link="https://ci.gravitee.io/job/gravitee-io/job/gravitee-policy-transformheaders/"]
@@ -19,15 +19,16 @@ endif::[]
 
 == Description
 
-The Transform Headers policy is used to override incoming request HTTP headers or outbound response HTTP headers.
-You can override these HTTP headers by:
+You can use the `transformheaders` policy is to override HTTP headers in incoming requests or outbound responses.
+You can override the HTTP headers by:
 
-* Adding or updating list of headers
-* Removing them individually
+* Adding to or updating the list of headers
+* Removing headers individually
 * Defining a whitelist
 
+== Example
+
 [source, json]
-.Sample
 ----
 "transform-headers": {
     "addHeaders": [

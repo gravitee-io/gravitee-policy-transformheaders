@@ -81,9 +81,10 @@ public class TransformHeadersPolicyConfigurationTest {
 
         assertEquals(PolicyScope.RESPONSE, configuration.getScope());
         assertNull(configuration.getAddHeaders());
-        assertNull(configuration.getRemoveHeaders());
+        assertNotNull(configuration.getRemoveHeaders());
         assertNotNull(configuration.getWhitelistHeaders());
 
+        assertEquals(1, configuration.getRemoveHeaders().size());
         assertEquals(2, configuration.getWhitelistHeaders().size());
     }
 

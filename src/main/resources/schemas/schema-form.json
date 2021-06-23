@@ -14,7 +14,7 @@
       "type" : "array",
       "title": "Remove headers",
       "items" : {
-        "type" : "string",
+        "type" : ["string", "null"],
         "description": "Name of the header",
         "title": "Header"
       }
@@ -24,7 +24,7 @@
       "title": "Headers to keep",
       "description": "Works like a whitelist. All other headers will be removed.",
       "items": {
-        "type": "string",
+        "type": ["string", "null"],
         "description": "Name of the header",
         "title": "Header"
       }

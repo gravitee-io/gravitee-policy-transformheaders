@@ -24,9 +24,14 @@ import io.gravitee.policy.api.annotations.OnRequest;
 import io.gravitee.policy.api.annotations.OnResponse;
 import io.gravitee.policy.transformheaders.configuration.PolicyScope;
 import io.gravitee.policy.transformheaders.configuration.TransformHeadersPolicyConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static io.gravitee.gateway.api.ExecutionContext.ATTR_API;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
@@ -35,10 +40,14 @@ import java.util.List;
  */
 public class TransformHeadersPolicy {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransformHeadersPolicy.class);
+
     /**
      * Transform headers configuration
      */
     private final TransformHeadersPolicyConfiguration transformHeadersPolicyConfiguration;
+
+    static final String errorMessageFormat = "[api-id:%s] [request-id:%s] [request-path:%s] %s";
 
     public TransformHeadersPolicy(final TransformHeadersPolicyConfiguration transformHeadersPolicyConfiguration) {
         this.transformHeadersPolicyConfiguration = transformHeadersPolicyConfiguration;
@@ -79,8 +88,10 @@ public class TransformHeadersPolicy {
                                     httpHeaders.set(header.getName(), extValue);
                                 }
                             } catch (Exception ex) {
-                                // Do nothing
-                                ex.printStackTrace();
+                                MDC.put("api", String.valueOf(executionContext.getAttribute(ATTR_API)));
+                                LOGGER.error(String.format(errorMessageFormat, executionContext.getAttribute(ATTR_API),
+                                        executionContext.request().id(), executionContext.request().path(), ex.getMessage()), ex.getCause());
+                                MDC.remove("api");
                             }
                         }
                     });

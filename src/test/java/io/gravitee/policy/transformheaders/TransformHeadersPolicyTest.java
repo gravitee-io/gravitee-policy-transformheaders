@@ -15,11 +15,11 @@
  */
 package io.gravitee.policy.transformheaders;
 
-import io.gravitee.common.http.HttpHeaders;
 import io.gravitee.el.TemplateEngine;
 import io.gravitee.gateway.api.ExecutionContext;
 import io.gravitee.gateway.api.Request;
 import io.gravitee.gateway.api.Response;
+import io.gravitee.gateway.api.http.HttpHeaders;
 import io.gravitee.policy.api.PolicyChain;
 import io.gravitee.policy.transformheaders.configuration.HttpHeader;
 import io.gravitee.policy.transformheaders.configuration.PolicyScope;
@@ -61,8 +61,8 @@ public class TransformHeadersPolicyTest {
     @Mock
     private Request request;
 
-    private HttpHeaders requestHttpHeaders = new HttpHeaders(),
-            responseHtpHeaders = new HttpHeaders();
+    private HttpHeaders requestHttpHeaders = HttpHeaders.create(),
+            responseHtpHeaders = HttpHeaders.create();
 
     @Mock
     private Response response;

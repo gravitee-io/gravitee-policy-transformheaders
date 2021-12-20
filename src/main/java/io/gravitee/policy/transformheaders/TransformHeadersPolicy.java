@@ -15,10 +15,10 @@
  */
 package io.gravitee.policy.transformheaders;
 
-import io.gravitee.common.http.HttpHeaders;
 import io.gravitee.gateway.api.ExecutionContext;
 import io.gravitee.gateway.api.Request;
 import io.gravitee.gateway.api.Response;
+import io.gravitee.gateway.api.http.HttpHeaders;
 import io.gravitee.policy.api.PolicyChain;
 import io.gravitee.policy.api.annotations.OnRequest;
 import io.gravitee.policy.api.annotations.OnResponse;
@@ -93,7 +93,7 @@ public class TransformHeadersPolicy {
 
         if (httpHeaders != null && transformHeadersPolicyConfiguration.getWhitelistHeaders() != null
                 && !transformHeadersPolicyConfiguration.getWhitelistHeaders().isEmpty()) {
-            httpHeaders.keySet().forEach(headerName -> {
+            httpHeaders.names().forEach(headerName -> {
                 if (!transformHeadersPolicyConfiguration.getWhitelistHeaders().contains(headerName)) {
                     headersToRemove.add(headerName);
                 }

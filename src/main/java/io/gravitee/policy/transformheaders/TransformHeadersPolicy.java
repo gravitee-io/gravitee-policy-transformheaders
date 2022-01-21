@@ -24,7 +24,6 @@ import io.gravitee.policy.api.annotations.OnRequest;
 import io.gravitee.policy.api.annotations.OnResponse;
 import io.gravitee.policy.transformheaders.configuration.PolicyScope;
 import io.gravitee.policy.transformheaders.configuration.TransformHeadersPolicyConfiguration;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +45,9 @@ public class TransformHeadersPolicy {
 
     @OnRequest
     public void onRequest(Request request, Response response, ExecutionContext executionContext, PolicyChain policyChain) {
-        if (transformHeadersPolicyConfiguration.getScope() == null || transformHeadersPolicyConfiguration.getScope() == PolicyScope.REQUEST) {
+        if (
+            transformHeadersPolicyConfiguration.getScope() == null || transformHeadersPolicyConfiguration.getScope() == PolicyScope.REQUEST
+        ) {
             // Do transform
             transform(request.headers(), executionContext);
         }
@@ -69,35 +70,42 @@ public class TransformHeadersPolicy {
     void transform(HttpHeaders httpHeaders, ExecutionContext executionContext) {
         // Add or update response headers
         if (transformHeadersPolicyConfiguration.getAddHeaders() != null) {
-            transformHeadersPolicyConfiguration.getAddHeaders().forEach(
-                    header -> {
-                        if (header.getName() != null && !header.getName().trim().isEmpty()) {
-                            try {
-                                String extValue = (header.getValue() != null) ?
-                                        executionContext.getTemplateEngine().convert(header.getValue()) : null;
-                                if (extValue != null) {
-                                    httpHeaders.set(header.getName(), extValue);
-                                }
-                            } catch (Exception ex) {
-                                // Do nothing
-                                ex.printStackTrace();
+            transformHeadersPolicyConfiguration
+                .getAddHeaders()
+                .forEach(header -> {
+                    if (header.getName() != null && !header.getName().trim().isEmpty()) {
+                        try {
+                            String extValue = (header.getValue() != null)
+                                ? executionContext.getTemplateEngine().convert(header.getValue())
+                                : null;
+                            if (extValue != null) {
+                                httpHeaders.set(header.getName(), extValue);
                             }
+                        } catch (Exception ex) {
+                            // Do nothing
+                            ex.printStackTrace();
                         }
-                    });
+                    }
+                });
         }
 
         // verify the whitelist
         List<String> headersToRemove = transformHeadersPolicyConfiguration.getRemoveHeaders() == null
-                ? new ArrayList<>()
-                : new ArrayList<>(transformHeadersPolicyConfiguration.getRemoveHeaders());
+            ? new ArrayList<>()
+            : new ArrayList<>(transformHeadersPolicyConfiguration.getRemoveHeaders());
 
-        if (httpHeaders != null && transformHeadersPolicyConfiguration.getWhitelistHeaders() != null
-                && !transformHeadersPolicyConfiguration.getWhitelistHeaders().isEmpty()) {
-            httpHeaders.names().forEach(headerName -> {
-                if (!transformHeadersPolicyConfiguration.getWhitelistHeaders().contains(headerName)) {
-                    headersToRemove.add(headerName);
-                }
-            });
+        if (
+            httpHeaders != null &&
+            transformHeadersPolicyConfiguration.getWhitelistHeaders() != null &&
+            !transformHeadersPolicyConfiguration.getWhitelistHeaders().isEmpty()
+        ) {
+            httpHeaders
+                .names()
+                .forEach(headerName -> {
+                    if (!transformHeadersPolicyConfiguration.getWhitelistHeaders().contains(headerName)) {
+                        headersToRemove.add(headerName);
+                    }
+                });
         }
 
         // Remove request headers

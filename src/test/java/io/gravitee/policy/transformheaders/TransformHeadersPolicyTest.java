@@ -15,6 +15,12 @@
  */
 package io.gravitee.policy.transformheaders;
 
+import static org.junit.Assert.*;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import io.gravitee.el.TemplateEngine;
 import io.gravitee.gateway.api.ExecutionContext;
 import io.gravitee.gateway.api.Request;
@@ -24,20 +30,13 @@ import io.gravitee.policy.api.PolicyChain;
 import io.gravitee.policy.transformheaders.configuration.HttpHeader;
 import io.gravitee.policy.transformheaders.configuration.PolicyScope;
 import io.gravitee.policy.transformheaders.configuration.TransformHeadersPolicyConfiguration;
+import java.util.Arrays;
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.Arrays;
-import java.util.Collections;
-
-import static org.junit.Assert.*;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
@@ -61,8 +60,7 @@ public class TransformHeadersPolicyTest {
     @Mock
     private Request request;
 
-    private HttpHeaders requestHttpHeaders = HttpHeaders.create(),
-            responseHtpHeaders = HttpHeaders.create();
+    private HttpHeaders requestHttpHeaders = HttpHeaders.create(), responseHtpHeaders = HttpHeaders.create();
 
     @Mock
     private Response response;
@@ -116,8 +114,8 @@ public class TransformHeadersPolicyTest {
     @Test
     public void testOnRequest_addHeader() {
         // Prepare
-        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(Collections.singletonList(
-                new HttpHeader("X-Gravitee-Test", "Value")));
+        when(transformHeadersPolicyConfiguration.getAddHeaders())
+            .thenReturn(Collections.singletonList(new HttpHeader("X-Gravitee-Test", "Value")));
 
         // Run
         transformHeadersPolicy.onRequest(request, response, executionContext, policyChain);
@@ -132,8 +130,8 @@ public class TransformHeadersPolicyTest {
         // Prepare
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
         when(transformHeadersPolicyConfiguration.getRemoveHeaders()).thenReturn(null);
-        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(Collections.singletonList(
-                new HttpHeader("X-Gravitee-Test", "Value")));
+        when(transformHeadersPolicyConfiguration.getAddHeaders())
+            .thenReturn(Collections.singletonList(new HttpHeader("X-Gravitee-Test", "Value")));
 
         // Run
         transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);
@@ -147,8 +145,8 @@ public class TransformHeadersPolicyTest {
     public void testOnResponse_addMultipleHeaders() {
         // Prepare
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
-        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(Arrays.asList(
-                new HttpHeader("X-Gravitee-Header1", "Header1"), new HttpHeader("X-Gravitee-Header2", "Header2")));
+        when(transformHeadersPolicyConfiguration.getAddHeaders())
+            .thenReturn(Arrays.asList(new HttpHeader("X-Gravitee-Header1", "Header1"), new HttpHeader("X-Gravitee-Header2", "Header2")));
 
         // Run
         transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);
@@ -162,8 +160,8 @@ public class TransformHeadersPolicyTest {
     @Test
     public void testOnRequest_addHeader_nullValue() {
         // Prepare
-        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(Collections.singletonList(
-                new HttpHeader("X-Gravitee-Test", null)));
+        when(transformHeadersPolicyConfiguration.getAddHeaders())
+            .thenReturn(Collections.singletonList(new HttpHeader("X-Gravitee-Test", null)));
 
         // Run
         transformHeadersPolicy.onRequest(request, response, executionContext, policyChain);
@@ -177,8 +175,8 @@ public class TransformHeadersPolicyTest {
     public void testOnResponse_addHeader_nullValue() {
         // Prepare
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
-        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(Collections.singletonList(
-                new HttpHeader("X-Gravitee-Test", null)));
+        when(transformHeadersPolicyConfiguration.getAddHeaders())
+            .thenReturn(Collections.singletonList(new HttpHeader("X-Gravitee-Test", null)));
 
         // Run
         transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);
@@ -191,8 +189,7 @@ public class TransformHeadersPolicyTest {
     @Test
     public void testOnRequest_addHeader_nullName() {
         // Prepare
-        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(Collections.singletonList(
-                new HttpHeader(null, "Value")));
+        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(Collections.singletonList(new HttpHeader(null, "Value")));
 
         // Run
         transformHeadersPolicy.onRequest(request, response, executionContext, policyChain);
@@ -206,8 +203,7 @@ public class TransformHeadersPolicyTest {
     public void testOnResponse_addHeader_nullName() {
         // Prepare
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
-        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(Collections.singletonList(
-                new HttpHeader(null, "Value")));
+        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(Collections.singletonList(new HttpHeader(null, "Value")));
 
         // Run
         transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);
@@ -221,8 +217,8 @@ public class TransformHeadersPolicyTest {
     public void testOnRequest_updateHeader() {
         // Prepare
         requestHttpHeaders.set("X-Gravitee-Test", "Initial");
-        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(Collections.singletonList(
-                new HttpHeader("X-Gravitee-Test", "Value")));
+        when(transformHeadersPolicyConfiguration.getAddHeaders())
+            .thenReturn(Collections.singletonList(new HttpHeader("X-Gravitee-Test", "Value")));
 
         // Run
         transformHeadersPolicy.onRequest(request, response, executionContext, policyChain);
@@ -237,8 +233,8 @@ public class TransformHeadersPolicyTest {
         // Prepare
         responseHtpHeaders.set("X-Gravitee-Test", "Initial");
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
-        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(Collections.singletonList(
-                new HttpHeader("X-Gravitee-Test", "Value")));
+        when(transformHeadersPolicyConfiguration.getAddHeaders())
+            .thenReturn(Collections.singletonList(new HttpHeader("X-Gravitee-Test", "Value")));
 
         // Run
         transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);
@@ -252,8 +248,7 @@ public class TransformHeadersPolicyTest {
     public void testOnRequest_removeHeader() {
         // Prepare
         requestHttpHeaders.set("X-Gravitee-Test", "Initial");
-        when(transformHeadersPolicyConfiguration.getRemoveHeaders()).thenReturn(Collections.singletonList(
-                "X-Gravitee-Test"));
+        when(transformHeadersPolicyConfiguration.getRemoveHeaders()).thenReturn(Collections.singletonList("X-Gravitee-Test"));
 
         // Run
         transformHeadersPolicy.onRequest(request, response, executionContext, policyChain);
@@ -269,8 +264,7 @@ public class TransformHeadersPolicyTest {
         responseHtpHeaders.set("X-Gravitee-Test", "Initial");
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
         when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(null);
-        when(transformHeadersPolicyConfiguration.getRemoveHeaders()).thenReturn(Collections.singletonList(
-                "X-Gravitee-Test"));
+        when(transformHeadersPolicyConfiguration.getRemoveHeaders()).thenReturn(Collections.singletonList("X-Gravitee-Test"));
 
         // Run
         transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);
@@ -288,10 +282,8 @@ public class TransformHeadersPolicyTest {
         responseHtpHeaders.set("X-Gravitee-Black", "Initial");
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
         when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(null);
-        when(transformHeadersPolicyConfiguration.getRemoveHeaders()).thenReturn(Collections.singletonList(
-                "X-Gravitee-ToRemove"));
-        when(transformHeadersPolicyConfiguration.getWhitelistHeaders()).thenReturn(Collections.singletonList(
-                "X-Gravitee-White"));
+        when(transformHeadersPolicyConfiguration.getRemoveHeaders()).thenReturn(Collections.singletonList("X-Gravitee-ToRemove"));
+        when(transformHeadersPolicyConfiguration.getWhitelistHeaders()).thenReturn(Collections.singletonList("X-Gravitee-White"));
 
         // Run
         transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);

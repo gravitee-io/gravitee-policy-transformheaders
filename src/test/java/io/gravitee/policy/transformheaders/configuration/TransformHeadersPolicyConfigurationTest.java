@@ -15,15 +15,14 @@
  */
 package io.gravitee.policy.transformheaders.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-
-import static org.junit.Assert.*;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
@@ -34,8 +33,10 @@ public class TransformHeadersPolicyConfigurationTest {
 
     @Test
     public void test_transformHeaders01() throws IOException {
-        TransformHeadersPolicyConfiguration configuration =
-                load("/io/gravitee/policy/transformheaders/configuration/transformheaders01.json", TransformHeadersPolicyConfiguration.class);
+        TransformHeadersPolicyConfiguration configuration = load(
+            "/io/gravitee/policy/transformheaders/configuration/transformheaders01.json",
+            TransformHeadersPolicyConfiguration.class
+        );
 
         assertEquals(PolicyScope.REQUEST, configuration.getScope());
         assertNotNull(configuration.getAddHeaders());
@@ -48,8 +49,10 @@ public class TransformHeadersPolicyConfigurationTest {
 
     @Test
     public void test_transformHeaders02() throws IOException {
-        TransformHeadersPolicyConfiguration configuration =
-                load("/io/gravitee/policy/transformheaders/configuration/transformheaders02.json", TransformHeadersPolicyConfiguration.class);
+        TransformHeadersPolicyConfiguration configuration = load(
+            "/io/gravitee/policy/transformheaders/configuration/transformheaders02.json",
+            TransformHeadersPolicyConfiguration.class
+        );
 
         assertEquals(PolicyScope.RESPONSE, configuration.getScope());
         assertNotNull(configuration.getAddHeaders());
@@ -62,8 +65,10 @@ public class TransformHeadersPolicyConfigurationTest {
 
     @Test
     public void test_transformHeaders03() throws IOException {
-        TransformHeadersPolicyConfiguration configuration =
-                load("/io/gravitee/policy/transformheaders/configuration/transformheaders03.json", TransformHeadersPolicyConfiguration.class);
+        TransformHeadersPolicyConfiguration configuration = load(
+            "/io/gravitee/policy/transformheaders/configuration/transformheaders03.json",
+            TransformHeadersPolicyConfiguration.class
+        );
 
         assertEquals(PolicyScope.RESPONSE, configuration.getScope());
         assertNotNull(configuration.getAddHeaders());
@@ -76,8 +81,10 @@ public class TransformHeadersPolicyConfigurationTest {
 
     @Test
     public void test_transformHeaders04() throws IOException {
-        TransformHeadersPolicyConfiguration configuration =
-                load("/io/gravitee/policy/transformheaders/configuration/transformheaders04.json", TransformHeadersPolicyConfiguration.class);
+        TransformHeadersPolicyConfiguration configuration = load(
+            "/io/gravitee/policy/transformheaders/configuration/transformheaders04.json",
+            TransformHeadersPolicyConfiguration.class
+        );
 
         assertEquals(PolicyScope.RESPONSE, configuration.getScope());
         assertNull(configuration.getAddHeaders());

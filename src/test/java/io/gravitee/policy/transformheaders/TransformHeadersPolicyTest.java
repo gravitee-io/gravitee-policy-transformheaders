@@ -275,6 +275,22 @@ public class TransformHeadersPolicyTest {
     }
 
     @Test
+    public void testOnResponse_removeHeaderNull() {
+        // Prepare
+        responseHtpHeaders.set("X-Gravitee-Test", "Initial");
+        when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
+        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(null);
+        when(transformHeadersPolicyConfiguration.getRemoveHeaders()).thenReturn(Collections.singletonList(null));
+
+        // Run
+        transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);
+
+        // Verify
+        verify(policyChain).doNext(request, response);
+        assertEquals(responseHtpHeaders.getFirst("X-Gravitee-Test"), "Initial");
+    }
+
+    @Test
     public void testOnResponse_removeHeaderAndWhiteList() {
         // Prepare
         responseHtpHeaders.set("X-Gravitee-ToRemove", "Initial");

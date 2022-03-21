@@ -20,10 +20,18 @@ import static io.gravitee.gateway.api.ExecutionContext.ATTR_API;
 import io.gravitee.gateway.api.ExecutionContext;
 import io.gravitee.gateway.api.Request;
 import io.gravitee.gateway.api.Response;
+import io.gravitee.gateway.api.buffer.Buffer;
+import io.gravitee.gateway.api.el.EvaluableRequest;
+import io.gravitee.gateway.api.el.EvaluableResponse;
 import io.gravitee.gateway.api.http.HttpHeaders;
+import io.gravitee.gateway.api.stream.BufferedReadWriteStream;
+import io.gravitee.gateway.api.stream.ReadWriteStream;
+import io.gravitee.gateway.api.stream.SimpleReadWriteStream;
 import io.gravitee.policy.api.PolicyChain;
 import io.gravitee.policy.api.annotations.OnRequest;
+import io.gravitee.policy.api.annotations.OnRequestContent;
 import io.gravitee.policy.api.annotations.OnResponse;
+import io.gravitee.policy.api.annotations.OnResponseContent;
 import io.gravitee.policy.transformheaders.configuration.PolicyScope;
 import io.gravitee.policy.transformheaders.configuration.TransformHeadersPolicyConfiguration;
 import java.util.ArrayList;
@@ -40,6 +48,9 @@ import org.slf4j.MDC;
 public class TransformHeadersPolicy {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformHeadersPolicy.class);
+
+    private static final String REQUEST_TEMPLATE_VARIABLE = "request";
+    private static final String RESPONSE_TEMPLATE_VARIABLE = "response";
 
     /**
      * Transform headers configuration
@@ -74,6 +85,68 @@ public class TransformHeadersPolicy {
 
         // Apply next policy in chain
         policyChain.doNext(request, response);
+    }
+
+    @OnRequestContent
+    public ReadWriteStream<Buffer> onRequestContent(ExecutionContext executionContext) {
+        if (transformHeadersPolicyConfiguration.getScope() == PolicyScope.REQUEST_CONTENT) {
+            return createStream(PolicyScope.REQUEST_CONTENT, executionContext);
+        }
+
+        return null;
+    }
+
+    @OnResponseContent
+    public ReadWriteStream<Buffer> onResponseContent(ExecutionContext executionContext) {
+        if (transformHeadersPolicyConfiguration.getScope() == PolicyScope.RESPONSE_CONTENT) {
+            return createStream(PolicyScope.RESPONSE_CONTENT, executionContext);
+        }
+
+        return null;
+    }
+
+    private ReadWriteStream<Buffer> createStream(PolicyScope scope, ExecutionContext context) {
+        return new BufferedReadWriteStream() {
+            Buffer buffer = Buffer.buffer();
+
+            @Override
+            public SimpleReadWriteStream<Buffer> write(Buffer content) {
+                buffer.appendBuffer(content);
+                return this;
+            }
+
+            @Override
+            public void end() {
+                initRequestResponseProperties(
+                    context,
+                    (scope == PolicyScope.REQUEST_CONTENT) ? buffer.toString() : null,
+                    (scope == PolicyScope.RESPONSE_CONTENT) ? buffer.toString() : null
+                );
+
+                if (scope == PolicyScope.REQUEST_CONTENT) {
+                    transform(context.request().headers(), context);
+                } else {
+                    transform(context.response().headers(), context);
+                }
+
+                if (buffer.length() > 0) {
+                    super.write(buffer);
+                }
+                super.end();
+            }
+        };
+    }
+
+    private void initRequestResponseProperties(ExecutionContext context, String requestContent, String responseContent) {
+        context
+            .getTemplateEngine()
+            .getTemplateContext()
+            .setVariable(REQUEST_TEMPLATE_VARIABLE, new EvaluableRequest(context.request(), requestContent));
+
+        context
+            .getTemplateEngine()
+            .getTemplateContext()
+            .setVariable(RESPONSE_TEMPLATE_VARIABLE, new EvaluableResponse(context.response(), responseContent));
     }
 
     void transform(HttpHeaders httpHeaders, ExecutionContext executionContext) {

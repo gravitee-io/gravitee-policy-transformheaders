@@ -22,4 +22,6 @@ package io.gravitee.policy.transformheaders.configuration;
 public enum PolicyScope {
     REQUEST,
     RESPONSE,
+    REQUEST_CONTENT,
+    RESPONSE_CONTENT,
 }

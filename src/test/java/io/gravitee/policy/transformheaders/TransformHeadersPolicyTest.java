@@ -25,7 +25,9 @@ import io.gravitee.el.TemplateEngine;
 import io.gravitee.gateway.api.ExecutionContext;
 import io.gravitee.gateway.api.Request;
 import io.gravitee.gateway.api.Response;
+import io.gravitee.gateway.api.buffer.Buffer;
 import io.gravitee.gateway.api.http.HttpHeaders;
+import io.gravitee.gateway.api.stream.ReadWriteStream;
 import io.gravitee.policy.api.PolicyChain;
 import io.gravitee.policy.transformheaders.configuration.HttpHeader;
 import io.gravitee.policy.transformheaders.configuration.PolicyScope;
@@ -371,5 +373,47 @@ public class TransformHeadersPolicyTest {
         verify(policyChain).doNext(request, response);
         assertNull(requestHttpHeaders.getFirst("X-Walter"));
         assertNotNull(requestHttpHeaders.getFirst("X-White"));
+    }
+
+    @Test
+    public void testOnRequestContent_addHeader() {
+        // Prepare
+        when(transformHeadersPolicyConfiguration.getAddHeaders())
+            .thenReturn(Collections.singletonList(new HttpHeader("X-Product-Id", "{#jsonPath(#request.content, '$.product.id')}")));
+
+        when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.REQUEST_CONTENT);
+        when(executionContext.getTemplateEngine()).thenReturn(TemplateEngine.templateEngine());
+        when(executionContext.request()).thenReturn(request);
+
+        // Run
+        new TransformHeadersPolicy(transformHeadersPolicyConfiguration)
+            .onRequestContent(executionContext)
+            .write(Buffer.buffer("{\n" + "  \"product\": {\n" + "    \"id\": \"1234\"\n" + "  }\n" + "}"))
+            .end();
+
+        // Verify
+        assertNotNull(requestHttpHeaders.getFirst("X-Product-Id"));
+        assertEquals("1234", requestHttpHeaders.getFirst("X-Product-Id"));
+    }
+
+    @Test
+    public void testOnResponseContent_addHeader() {
+        // Prepare
+        when(transformHeadersPolicyConfiguration.getAddHeaders())
+            .thenReturn(Collections.singletonList(new HttpHeader("X-Product-Id", "{#jsonPath(#response.content, '$.product.id')}")));
+
+        when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE_CONTENT);
+        when(executionContext.getTemplateEngine()).thenReturn(TemplateEngine.templateEngine());
+        when(executionContext.response()).thenReturn(response);
+
+        // Run
+        new TransformHeadersPolicy(transformHeadersPolicyConfiguration)
+            .onResponseContent(executionContext)
+            .write(Buffer.buffer("{\n" + "  \"product\": {\n" + "    \"id\": \"1234\"\n" + "  }\n" + "}"))
+            .end();
+
+        // Verify
+        assertNotNull(responseHtpHeaders.getFirst("X-Product-Id"));
+        assertEquals("1234", responseHtpHeaders.getFirst("X-Product-Id"));
     }
 }

@@ -9,11 +9,15 @@ endif::[]
 
 == Phase
 
-[cols="2*", options="header"]
+[cols="4*", options="header"]
 |===
 ^|onRequest
 ^|onResponse
+^|onRequestContent
+^|onResponseContent
 
+^.^| X
+^.^| X
 ^.^| X
 ^.^| X
 
@@ -47,5 +51,20 @@ You can override the HTTP headers by:
         "Content-Length"
     ],
     "scope": "REQUEST"
+}
+----
+
+Add a header from the request's payload:
+
+[source, json]
+----
+"transform-headers": {
+    "addHeaders": [
+        {
+            "name": "X-Product-Id",
+            "value": "{#jsonPath(#request.content, '$.product.id')}"
+        }
+    ]
+    "scope": "REQUEST_CONTENT"
 }
 ----

@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/1.9.1...1.10.0) (2022-03-24)
+
+
+### Features
+
+* Add support for request / response's payload to define HTTP headers values ([0cb0b2c](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/0cb0b2cb6aff125294f6fd4011dba74dd55db8ff)), closes [gravitee-io/issues#7333](https://github.com/gravitee-io/issues/issues/7333)
+
 ## [1.9.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/1.9.0...1.9.1) (2022-01-24)
 
 

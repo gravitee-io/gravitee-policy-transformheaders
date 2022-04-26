@@ -32,7 +32,7 @@ You can override the HTTP headers by:
 * Removing headers individually
 * Defining a whitelist
 
-Please note that on the request-content phease, you can only add new headers.
+Please note that on the request-content phase, you can only add new headers.
 
 == Example
 

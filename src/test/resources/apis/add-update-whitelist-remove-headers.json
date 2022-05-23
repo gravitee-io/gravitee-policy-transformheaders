@@ -1,0 +1,91 @@
+{
+  "id": "my-api",
+  "name": "my-api",
+  "gravitee": "2.0.0",
+  "proxy": {
+    "context_path": "/test",
+    "endpoints": [
+      {
+        "name": "default",
+        "target": "http://localhost:8080/endpoint",
+        "http": {
+          "connectTimeout": 3000,
+          "readTimeout": 60000
+        }
+      }
+    ]
+  },
+  "flows": [
+    {
+      "name": "flow-1",
+      "methods": [
+        "GET"
+      ],
+      "enabled": true,
+      "path-operator": {
+        "path": "/",
+        "operator": "STARTS_WITH"
+      },
+      "pre": [
+        {
+          "name": "Transform Headers",
+          "description": "Transform Headers on request",
+          "enabled": true,
+          "policy": "transform-headers",
+          "configuration": {
+            "addHeaders": [
+              {
+                "name": "headerKey",
+                "value": "headerValue"
+              },
+              {
+                "name": "toUpdateKey",
+                "value": "updatedValue"
+              }
+            ],
+            "whitelistHeaders": [
+              "headerKey",
+              "toUpdateKey",
+              "whitelistedKey",
+              "toRemoveKey"
+            ],
+            "removeHeaders": [
+               "toRemoveKey"
+            ],
+            "scope": "REQUEST"
+          }
+        }
+      ],
+      "post": [
+        {
+          "name": "Transform Headers",
+          "description": "Transform Headers on response",
+          "enabled": true,
+          "policy": "transform-headers",
+          "configuration": {
+            "addHeaders": [
+              {
+                "name": "headerKeyResponse",
+                "value": "headerValue"
+              },
+              {
+                "name": "toUpdateKeyResponse",
+                "value": "updatedValue"
+              }
+            ],
+            "whitelistHeaders": [
+              "headerKeyResponse",
+              "toUpdateKeyResponse",
+              "whitelistedKeyResponse",
+              "toRemoveKeyResponse"
+            ],
+            "removeHeaders": [
+               "toRemoveKeyResponse"
+            ],
+            "scope": "RESPONSE"
+          }
+        }
+      ]
+    }
+  ]
+}

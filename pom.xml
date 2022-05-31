@@ -30,35 +30,26 @@
     <parent>
         <groupId>io.gravitee</groupId>
         <artifactId>gravitee-parent</artifactId>
-        <version>20.1</version>
+        <version>20.2</version>
     </parent>
 
     <properties>
+        <gravitee-apim-gateway-tests-sdk.version>3.18.0-SNAPSHOT</gravitee-apim-gateway-tests-sdk.version>
+        <gravitee-apim-gateway-buffer.version>3.16.1</gravitee-apim-gateway-buffer.version>
+        <gravitee-bom.version>2.5</gravitee-bom.version>
+        <gravitee-common.version>1.26.1</gravitee-common.version>
         <gravitee-gateway-api.version>1.32.2</gravitee-gateway-api.version>
         <gravitee-policy-api.version>1.11.0</gravitee-policy-api.version>
-        <gravitee-common.version>1.24.0</gravitee-common.version>
-        <gravitee-apim-gateway-buffer.version>3.16.1</gravitee-apim-gateway-buffer.version>
-        <gravitee-bom.version>2.4</gravitee-bom.version>
-
         <json-schema-generator-maven-plugin.version>1.1.0</json-schema-generator-maven-plugin.version>
         <json-schema-generator-maven-plugin.outputDirectory>${project.build.directory}/schemas</json-schema-generator-maven-plugin.outputDirectory>
-        <junit-jupiter.version>5.8.2</junit-jupiter.version>
 
-        <maven-assembly-plugin.version>2.5.5</maven-assembly-plugin.version>
+        <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <!-- Property used by the publication job in CI-->
         <publish-folder-path>graviteeio-apim/plugins/policies</publish-folder-path>
-        <gateway-standalone-test-sdk.version>3.18.0-SNAPSHOT</gateway-standalone-test-sdk.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${junit-jupiter.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <!-- Import bom to properly inherit all dependencies -->
             <dependency>
                 <groupId>io.gravitee</groupId>
@@ -110,7 +101,7 @@
         <dependency>
             <groupId>io.gravitee.apim.gateway</groupId>
             <artifactId>gravitee-apim-gateway-tests-sdk</artifactId>
-            <version>${gateway-standalone-test-sdk.version}</version>
+            <version>${gravitee-apim-gateway-tests-sdk.version}</version>
             <scope>test</scope>
         </dependency>
 

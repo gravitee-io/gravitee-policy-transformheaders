@@ -31,6 +31,14 @@ You can override the HTTP headers by:
 * Adding to or updating the list of headers
 * Removing headers individually
 * Defining a whitelist
+== Compatibility with APIM
+
+|===
+| Plugin version | APIM version
+
+| Up to 1.x                   | All
+|===
+
 
 == Example
 

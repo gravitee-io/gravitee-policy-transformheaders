@@ -25,7 +25,7 @@ endif::[]
 
 == Description
 
-You can use the `transformheaders` policy is to override HTTP headers in incoming requests or outbound responses.
+You can use the `transformheaders` policy to override HTTP headers in incoming requests or outbound responses.
 You can override the HTTP headers by:
 
 * Adding to or updating the list of headers

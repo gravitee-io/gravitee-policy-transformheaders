@@ -15,196 +15,114 @@
  */
 package io.gravitee.policy.transformheaders;
 
-import static io.gravitee.gateway.api.ExecutionContext.ATTR_API;
-
-import io.gravitee.gateway.api.ExecutionContext;
-import io.gravitee.gateway.api.Request;
-import io.gravitee.gateway.api.Response;
-import io.gravitee.gateway.api.buffer.Buffer;
-import io.gravitee.gateway.api.el.EvaluableRequest;
-import io.gravitee.gateway.api.el.EvaluableResponse;
+import io.gravitee.el.TemplateEngine;
 import io.gravitee.gateway.api.http.HttpHeaders;
-import io.gravitee.gateway.api.stream.BufferedReadWriteStream;
-import io.gravitee.gateway.api.stream.ReadWriteStream;
-import io.gravitee.gateway.api.stream.SimpleReadWriteStream;
-import io.gravitee.policy.api.PolicyChain;
-import io.gravitee.policy.api.annotations.OnRequest;
-import io.gravitee.policy.api.annotations.OnRequestContent;
-import io.gravitee.policy.api.annotations.OnResponse;
-import io.gravitee.policy.api.annotations.OnResponseContent;
-import io.gravitee.policy.transformheaders.configuration.PolicyScope;
+import io.gravitee.gateway.reactive.api.ExecutionFailure;
+import io.gravitee.gateway.reactive.api.context.HttpExecutionContext;
+import io.gravitee.gateway.reactive.api.context.MessageExecutionContext;
+import io.gravitee.gateway.reactive.api.message.Message;
+import io.gravitee.gateway.reactive.api.policy.Policy;
 import io.gravitee.policy.transformheaders.configuration.TransformHeadersPolicyConfiguration;
+import io.gravitee.policy.transformheaders.v3.TransformHeadersPolicyV3;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Maybe;
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 /**
- * @author David BRASSELY (david.brassely at graviteesource.com)
- * @author Nicolas GERAUD (nicolas.geraud at graviteesource.com)
+ * @author Guillaume Lamirand (guillaume.lamirand at graviteesource.com)
  * @author GraviteeSource Team
  */
-public class TransformHeadersPolicy {
+public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements Policy {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TransformHeadersPolicy.class);
+    private static final String TRANSFORM_HEADERS_FAILURE = "TRANSFORM_HEADERS_FAILURE";
 
-    private static final String REQUEST_TEMPLATE_VARIABLE = "request";
-    private static final String RESPONSE_TEMPLATE_VARIABLE = "response";
-
-    /**
-     * Transform headers configuration
-     */
-    private final TransformHeadersPolicyConfiguration transformHeadersPolicyConfiguration;
-
-    static final String errorMessageFormat = "[api-id:%s] [request-id:%s] [request-path:%s] %s";
-
-    public TransformHeadersPolicy(final TransformHeadersPolicyConfiguration transformHeadersPolicyConfiguration) {
-        this.transformHeadersPolicyConfiguration = transformHeadersPolicyConfiguration;
+    public TransformHeadersPolicy(final TransformHeadersPolicyConfiguration configuration) {
+        super(configuration);
     }
 
-    @OnRequest
-    public void onRequest(Request request, Response response, ExecutionContext executionContext, PolicyChain policyChain) {
-        if (
-            transformHeadersPolicyConfiguration.getScope() == null || transformHeadersPolicyConfiguration.getScope() == PolicyScope.REQUEST
-        ) {
-            // Do transform
-            transform(request.headers(), executionContext);
-        }
-
-        // Apply next policy in chain
-        policyChain.doNext(request, response);
+    @Override
+    public String id() {
+        return "transform-headers";
     }
 
-    @OnResponse
-    public void onResponse(Request request, Response response, ExecutionContext executionContext, PolicyChain policyChain) {
-        if (transformHeadersPolicyConfiguration.getScope() == PolicyScope.RESPONSE) {
-            // Do transform
-            transform(response.headers(), executionContext);
-        }
-
-        // Apply next policy in chain
-        policyChain.doNext(request, response);
+    @Override
+    public Completable onRequest(HttpExecutionContext ctx) {
+        return Completable.defer(() -> transform(ctx, ctx.request().headers()));
     }
 
-    @OnRequestContent
-    public ReadWriteStream<Buffer> onRequestContent(ExecutionContext executionContext) {
-        if (transformHeadersPolicyConfiguration.getScope() == PolicyScope.REQUEST_CONTENT) {
-            return createStream(PolicyScope.REQUEST_CONTENT, executionContext);
-        }
-
-        return null;
+    @Override
+    public Completable onResponse(HttpExecutionContext ctx) {
+        return Completable.defer(() -> transform(ctx, ctx.response().headers()));
     }
 
-    @OnResponseContent
-    public ReadWriteStream<Buffer> onResponseContent(ExecutionContext executionContext) {
-        if (transformHeadersPolicyConfiguration.getScope() == PolicyScope.RESPONSE_CONTENT) {
-            return createStream(PolicyScope.RESPONSE_CONTENT, executionContext);
-        }
-
-        return null;
+    private Completable transform(final HttpExecutionContext ctx, final HttpHeaders httpHeaders) {
+        return transformHeaders(ctx.getTemplateEngine(), httpHeaders)
+            .onErrorResumeWith(
+                ctx.interruptWith(
+                    new ExecutionFailure(500).key(TRANSFORM_HEADERS_FAILURE).message("Unable to apply headers transformation")
+                )
+            );
     }
 
-    private ReadWriteStream<Buffer> createStream(PolicyScope scope, ExecutionContext context) {
-        return new BufferedReadWriteStream() {
-            Buffer buffer = Buffer.buffer();
-
-            @Override
-            public SimpleReadWriteStream<Buffer> write(Buffer content) {
-                buffer.appendBuffer(content);
-                return this;
-            }
-
-            @Override
-            public void end() {
-                initRequestResponseProperties(
-                    context,
-                    (scope == PolicyScope.REQUEST_CONTENT) ? buffer.toString() : null,
-                    (scope == PolicyScope.RESPONSE_CONTENT) ? buffer.toString() : null
-                );
-
-                if (scope == PolicyScope.REQUEST_CONTENT) {
-                    transform(context.request().headers(), context);
-                } else {
-                    transform(context.response().headers(), context);
-                }
-
-                if (buffer.length() > 0) {
-                    super.write(buffer);
-                }
-                super.end();
-            }
-        };
+    @Override
+    public Completable onMessageRequest(MessageExecutionContext ctx) {
+        return ctx.request().onMessage(message -> transformMessageHeaders(ctx, message));
     }
 
-    private void initRequestResponseProperties(ExecutionContext context, String requestContent, String responseContent) {
-        context
-            .getTemplateEngine()
-            .getTemplateContext()
-            .setVariable(REQUEST_TEMPLATE_VARIABLE, new EvaluableRequest(context.request(), requestContent));
-
-        context
-            .getTemplateEngine()
-            .getTemplateContext()
-            .setVariable(RESPONSE_TEMPLATE_VARIABLE, new EvaluableResponse(context.response(), responseContent));
+    @Override
+    public Completable onMessageResponse(MessageExecutionContext ctx) {
+        return ctx.response().onMessage(message -> transformMessageHeaders(ctx, message));
     }
 
-    void transform(HttpHeaders httpHeaders, ExecutionContext executionContext) {
-        // Add or update response headers
-        if (transformHeadersPolicyConfiguration.getAddHeaders() != null) {
-            transformHeadersPolicyConfiguration
-                .getAddHeaders()
-                .forEach(header -> {
-                    if (header.getName() != null && !header.getName().trim().isEmpty()) {
-                        try {
-                            String extValue = (header.getValue() != null)
-                                ? executionContext.getTemplateEngine().convert(header.getValue())
-                                : null;
-                            if (extValue != null) {
-                                httpHeaders.set(header.getName(), extValue);
-                            }
-                        } catch (Exception ex) {
-                            MDC.put("api", String.valueOf(executionContext.getAttribute(ATTR_API)));
-                            LOGGER.error(
-                                String.format(
-                                    errorMessageFormat,
-                                    executionContext.getAttribute(ATTR_API),
-                                    executionContext.request().id(),
-                                    executionContext.request().path(),
-                                    ex.getMessage()
-                                ),
-                                ex.getCause()
-                            );
-                            MDC.remove("api");
+    private Maybe<Message> transformMessageHeaders(final MessageExecutionContext ctx, final Message message) {
+        return transformHeaders(ctx.getTemplateEngine(message), message.headers())
+            .andThen(Maybe.just(message))
+            .onErrorResumeWith(
+                ctx.interruptMessageWith(
+                    new ExecutionFailure(500).key(TRANSFORM_HEADERS_FAILURE).message("Unable to apply headers transformation on message")
+                )
+            );
+    }
+
+    private Completable transformHeaders(final TemplateEngine templateEngine, final HttpHeaders httpHeaders) {
+        return Maybe
+            .fromCallable(configuration::getAddHeaders)
+            .flatMapPublisher(Flowable::fromIterable)
+            .filter(httpHeader -> httpHeader.getName() != null && !httpHeader.getName().trim().isEmpty() && httpHeader.getValue() != null)
+            .flatMapCompletable(httpHeader ->
+                templateEngine
+                    .eval(httpHeader.getValue(), String.class)
+                    .doOnSuccess(newValue -> httpHeaders.set(httpHeader.getName(), newValue))
+                    .ignoreElement()
+            )
+            .andThen(
+                Completable.fromRunnable(() -> {
+                    // verify the whitelist
+                    List<String> headersToRemove = configuration.getRemoveHeaders() == null
+                        ? new ArrayList<>()
+                        : new ArrayList<>(configuration.getRemoveHeaders());
+
+                    if (
+                        httpHeaders != null && configuration.getWhitelistHeaders() != null && !configuration.getWhitelistHeaders().isEmpty()
+                    ) {
+                        httpHeaders
+                            .names()
+                            .forEach(headerName -> {
+                                if (!configuration.getWhitelistHeaders().contains(headerName)) {
+                                    headersToRemove.add(headerName);
+                                }
+                            });
+                    }
+
+                    // Remove request headers
+                    headersToRemove.forEach(headerName -> {
+                        if (headerName != null && !headerName.trim().isEmpty()) {
+                            httpHeaders.remove(headerName);
                         }
-                    }
-                });
-        }
-
-        // verify the whitelist
-        List<String> headersToRemove = transformHeadersPolicyConfiguration.getRemoveHeaders() == null
-            ? new ArrayList<>()
-            : new ArrayList<>(transformHeadersPolicyConfiguration.getRemoveHeaders());
-
-        if (
-            httpHeaders != null &&
-            transformHeadersPolicyConfiguration.getWhitelistHeaders() != null &&
-            !transformHeadersPolicyConfiguration.getWhitelistHeaders().isEmpty()
-        ) {
-            httpHeaders
-                .names()
-                .forEach(headerName -> {
-                    if (!transformHeadersPolicyConfiguration.getWhitelistHeaders().contains(headerName)) {
-                        headersToRemove.add(headerName);
-                    }
-                });
-        }
-
-        // Remove request headers
-        headersToRemove.forEach(headerName -> {
-            if (headerName != null && !headerName.trim().isEmpty()) {
-                httpHeaders.remove(headerName);
-            }
-        });
+                    });
+                })
+            );
     }
 }

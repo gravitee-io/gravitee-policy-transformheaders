@@ -7,6 +7,15 @@ image:https://img.shields.io/badge/semantic--release-conventional%20commits-e100
 image:https://circleci.com/gh/gravitee-io/gravitee-policy-transformheaders.svg?style=svg["CircleCI", link="https://circleci.com/gh/gravitee-io/gravitee-policy-transformheaders"]
 endif::[]
 
+== Compatibility matrix
+
+|===
+|Plugin version | APIM version
+
+|1.x                 | 3.x or lower
+|2.x and upper       | 4.x or higher
+|===
+
 == Phase
 
 [cols="4*", options="header"]

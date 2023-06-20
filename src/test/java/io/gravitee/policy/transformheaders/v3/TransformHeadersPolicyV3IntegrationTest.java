@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.gravitee.policy.transformheaders;
+package io.gravitee.policy.transformheaders.v3;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -25,21 +25,40 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.gravitee.apim.gateway.tests.sdk.AbstractPolicyTest;
 import io.gravitee.apim.gateway.tests.sdk.annotations.DeployApi;
 import io.gravitee.apim.gateway.tests.sdk.annotations.GatewayTest;
+import io.gravitee.apim.gateway.tests.sdk.configuration.GatewayConfigurationBuilder;
+import io.gravitee.definition.model.Api;
+import io.gravitee.definition.model.ExecutionMode;
 import io.gravitee.policy.transformheaders.configuration.TransformHeadersPolicyConfiguration;
-import io.reactivex.observers.TestObserver;
-import io.vertx.reactivex.core.buffer.Buffer;
-import io.vertx.reactivex.ext.web.client.HttpResponse;
-import io.vertx.reactivex.ext.web.client.WebClient;
+import io.gravitee.policy.transformheaders.v3.TransformHeadersPolicyV3;
+import io.reactivex.rxjava3.observers.TestObserver;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.rxjava3.core.http.HttpClient;
+import io.vertx.rxjava3.core.http.HttpClientResponse;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
 @GatewayTest
 @DeployApi("/apis/add-update-whitelist-remove-headers.json")
-class TransformHeadersPolicyIntegrationTest extends AbstractPolicyTest<TransformHeadersPolicy, TransformHeadersPolicyConfiguration> {
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+class TransformHeadersPolicyV3IntegrationTest extends AbstractPolicyTest<TransformHeadersPolicyV3, TransformHeadersPolicyConfiguration> {
+
+    @Override
+    protected void configureGateway(GatewayConfigurationBuilder gatewayConfigurationBuilder) {
+        super.configureGateway(gatewayConfigurationBuilder);
+        gatewayConfigurationBuilder.set("api.jupiterMode.enabled", "false");
+    }
+
+    @Override
+    public void configureApi(Api api) {
+        super.configureApi(api);
+        api.setExecutionMode(ExecutionMode.V3);
+    }
 
     @Test
     @DisplayName("Should add, update, whitelist and remove headers")
-    void shouldAddUpdateAndRemoveHeaders(WebClient client) {
+    void shouldAddUpdateAndRemoveHeaders(HttpClient client) throws InterruptedException {
         wiremock.stubFor(
             get("/endpoint")
                 .willReturn(
@@ -52,14 +71,17 @@ class TransformHeadersPolicyIntegrationTest extends AbstractPolicyTest<Transform
                 )
         );
 
-        final TestObserver<HttpResponse<Buffer>> obs = client
-            .get("/test")
-            .putHeader("toUpdateKey", "firstValue")
-            .putHeader("toRemoveKey", "willBeRemoved")
-            .putHeader("whitelistedKey", "whitelisted")
-            .putHeader("notInWhitelistKey1", "excluded")
-            .putHeader("notInWhitelistKey2", "excluded")
-            .rxSend()
+        final TestObserver<HttpClientResponse> obs = client
+            .request(HttpMethod.GET, "/test")
+            .flatMap(request ->
+                request
+                    .putHeader("toUpdateKey", "firstValue")
+                    .putHeader("toRemoveKey", "willBeRemoved")
+                    .putHeader("whitelistedKey", "whitelisted")
+                    .putHeader("notInWhitelistKey1", "excluded")
+                    .putHeader("notInWhitelistKey2", "excluded")
+                    .rxSend()
+            )
             .test();
 
         awaitTerminalEvent(obs);

@@ -1,3 +1,10 @@
+## [2.0.1-alpha.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/2.0.0...2.0.1-alpha.1) (2023-06-22)
+
+
+### Bug Fixes
+
+* add missing manifest information ([ee3bf0b](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/ee3bf0b28193a49c88e33bc064c76957cf3004f1))
+
 # [2.0.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/1.10.0...2.0.0) (2023-06-22)
 
 

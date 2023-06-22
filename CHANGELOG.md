@@ -1,3 +1,20 @@
+# [2.0.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/1.10.0...2.0.0) (2023-06-22)
+
+
+### Bug Fixes
+
+* fixed little typo in README.adoc ([e88ce29](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/e88ce298d390b4c850aa4c7566c4f5584f893461))
+
+
+### Features
+
+* add support of message level transformation ([f821384](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/f821384a56d88d4a8a8b0e2ee157eb1e100a1d14))
+
+
+### BREAKING CHANGES
+
+* this version is using the latest dependencies introduced by Gravitee V4.0
+
 # [1.10.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/1.9.1...1.10.0) (2022-03-24)
 
 

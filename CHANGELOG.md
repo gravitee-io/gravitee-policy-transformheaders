@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/2.0.0...2.0.1) (2023-06-23)
+
+
+### Bug Fixes
+
+* addition of supported API type & flow phase for this policy ([db53540](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/db53540a233f3be7b77e52d796ee0ea604b13088))
+
 # [2.0.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/1.10.0...2.0.0) (2023-06-22)
 
 

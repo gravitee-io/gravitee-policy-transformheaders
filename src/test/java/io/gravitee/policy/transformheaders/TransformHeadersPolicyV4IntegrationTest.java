@@ -75,12 +75,6 @@ class TransformHeadersPolicyV4IntegrationTest extends AbstractPolicyTest<Transfo
     }
 
     @Override
-    protected void configureGateway(GatewayConfigurationBuilder gatewayConfigurationBuilder) {
-        super.configureGateway(gatewayConfigurationBuilder);
-        gatewayConfigurationBuilder.set("api.jupiterMode.enabled", "true");
-    }
-
-    @Override
     public void configureReactors(Set<ReactorPlugin<? extends ReactorFactory<?>>> reactors) {
         reactors.add(ReactorBuilder.build(MessageApiReactorFactory.class));
     }

@@ -1,3 +1,10 @@
+# [2.1.0-alpha.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/2.0.1...2.1.0-alpha.1) (2023-06-27)
+
+
+### Features
+
+* clean and validate json schema for v4 ([da2a5bc](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/da2a5bc90dce520a88c98e8f860c770329c98fa9))
+
 ## [2.0.1-alpha.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/2.0.0...2.0.1-alpha.1) (2023-06-22)
 
 

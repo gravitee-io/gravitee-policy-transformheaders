@@ -1,3 +1,10 @@
+# [2.1.0-alpha.2](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/2.1.0-alpha.1...2.1.0-alpha.2) (2023-06-29)
+
+
+### Bug Fixes
+
+* use new execution mode V4 Emulation ([7d17544](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/7d17544f84e529a6763dd1f2a3a3094e1b0e0903))
+
 # [2.1.0-alpha.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/2.0.1...2.1.0-alpha.1) (2023-06-27)
 
 

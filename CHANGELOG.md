@@ -1,3 +1,26 @@
+# [3.0.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/2.0.1...3.0.0) (2023-07-18)
+
+
+### Bug Fixes
+
+* remove extra compatibility matrix ([88c653d](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/88c653d638b1e012b1cdfbebaa17bf2048f35a89))
+* use new execution mode V4 Emulation ([7d17544](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/7d17544f84e529a6763dd1f2a3a3094e1b0e0903))
+
+
+### chore
+
+* **deps:** update gravitee-parent ([84ca37a](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/84ca37a428c117eda89a21c8fa4b4740388f5115))
+
+
+### Features
+
+* clean and validate json schema for v4 ([da2a5bc](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/da2a5bc90dce520a88c98e8f860c770329c98fa9))
+
+
+### BREAKING CHANGES
+
+* **deps:** require Java17
+
 # [2.1.0-alpha.2](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/2.1.0-alpha.1...2.1.0-alpha.2) (2023-06-29)
 
 

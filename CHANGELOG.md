@@ -1,3 +1,20 @@
+# [3.0.0-alpha.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/2.1.0-alpha.2...3.0.0-alpha.1) (2023-07-18)
+
+
+### Bug Fixes
+
+* remove extra compatibility matrix ([88c653d](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/88c653d638b1e012b1cdfbebaa17bf2048f35a89))
+
+
+### chore
+
+* **deps:** update gravitee-parent ([84ca37a](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/84ca37a428c117eda89a21c8fa4b4740388f5115))
+
+
+### BREAKING CHANGES
+
+* **deps:** require Java17
+
 # [2.1.0-alpha.2](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/2.1.0-alpha.1...2.1.0-alpha.2) (2023-06-29)
 
 

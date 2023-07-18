@@ -1,104 +1,97 @@
 {
-  "id": "my-api",
-  "name": "my-api",
-  "apiVersion": "1.0",
-  "definitionVersion": "4.0.0",
-  "type": "message",
-  "listeners": [
-    {
-      "type": "http",
-      "paths": [
+    "id": "my-api",
+    "name": "my-api",
+    "apiVersion": "1.0",
+    "definitionVersion": "4.0.0",
+    "type": "message",
+    "listeners": [
         {
-          "path": "/test"
-        }
-      ],
-      "entrypoints": [
-        {
-          "type": "sse",
-          "configuration": {
-            "headersAsComment" : true
-          }
-        }
-      ]
-    }
-  ],
-  "endpointGroups": [
-    {
-      "name": "default-group",
-      "type": "mock",
-      "endpoints": [
-        {
-          "name": "default",
-          "type": "mock",
-          "weight": 1,
-          "inheritConfiguration": false,
-          "configuration": {
-            "messageCount": 1,
-            "messageContent": "{ \"message\": \"hello\" }",
-            "headers": [
-              {
-                "name": "toUpdateKeyResponse",
-                 "value" : "responseToUpdate"
-              },
-              {
-                "name": "toRemoveKeyResponse",
-                "value" : "willBeRemoved"
-              },
-              {
-                "name": "whitelistedKeyResponse",
-                "value" : "whitelisted"
-              },
-              {
-                "name": "notInWhitelistKeyResponse1",
-                "value" : "excluded"
-              },
-              {
-                "name": "notInWhitelistKeyResponse2",
-                "value" : "excluded"
-              }
+            "type": "http",
+            "paths": [
+                {
+                    "path": "/test"
+                }
+            ],
+            "entrypoints": [
+                {
+                    "type": "sse",
+                    "configuration": {
+                        "headersAsComment": true
+                    }
+                }
             ]
-          }
         }
-      ]
-    }
-  ],
-  "flows": [
-    {
-      "name": "flow-1",
-      "enabled": true,
-      "request": [],
-      "response": [],
-      "publish": [],
-      "subscribe": [
+    ],
+    "endpointGroups": [
         {
-          "name": "Transform Headers",
-          "description": "Transform Headers on request",
-          "enabled": true,
-          "policy": "transform-headers",
-          "configuration": {
-            "addHeaders": [
-              {
-                "name": "headerKeyResponse",
-                "value": "headerValue"
-              },
-              {
-                "name": "toUpdateKeyResponse",
-                "value": "updatedValue"
-              }
-            ],
-            "whitelistHeaders": [
-              "headerKeyResponse",
-              "toUpdateKeyResponse",
-              "whitelistedKeyResponse",
-              "toRemoveKeyResponse"
-            ],
-            "removeHeaders": [
-              "toRemoveKeyResponse"
-            ],
-            "scope": "RESPONSE"
-          }
+            "name": "default-group",
+            "type": "mock",
+            "endpoints": [
+                {
+                    "name": "default",
+                    "type": "mock",
+                    "weight": 1,
+                    "inheritConfiguration": false,
+                    "configuration": {
+                        "messageCount": 1,
+                        "messageContent": "{ \"message\": \"hello\" }",
+                        "headers": [
+                            {
+                                "name": "toUpdateKeyResponse",
+                                "value": "responseToUpdate"
+                            },
+                            {
+                                "name": "toRemoveKeyResponse",
+                                "value": "willBeRemoved"
+                            },
+                            {
+                                "name": "whitelistedKeyResponse",
+                                "value": "whitelisted"
+                            },
+                            {
+                                "name": "notInWhitelistKeyResponse1",
+                                "value": "excluded"
+                            },
+                            {
+                                "name": "notInWhitelistKeyResponse2",
+                                "value": "excluded"
+                            }
+                        ]
+                    }
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ],
+    "flows": [
+        {
+            "name": "flow-1",
+            "enabled": true,
+            "request": [],
+            "response": [],
+            "publish": [],
+            "subscribe": [
+                {
+                    "name": "Transform Headers",
+                    "description": "Transform Headers on request",
+                    "enabled": true,
+                    "policy": "transform-headers",
+                    "configuration": {
+                        "addHeaders": [
+                            {
+                                "name": "headerKeyResponse",
+                                "value": "headerValue"
+                            },
+                            {
+                                "name": "toUpdateKeyResponse",
+                                "value": "updatedValue"
+                            }
+                        ],
+                        "whitelistHeaders": ["headerKeyResponse", "toUpdateKeyResponse", "whitelistedKeyResponse", "toRemoveKeyResponse"],
+                        "removeHeaders": ["toRemoveKeyResponse"],
+                        "scope": "RESPONSE"
+                    }
+                }
+            ]
+        }
+    ]
 }

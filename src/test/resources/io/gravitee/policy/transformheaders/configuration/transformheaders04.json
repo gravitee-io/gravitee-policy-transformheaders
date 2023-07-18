@@ -1,8 +1,5 @@
 {
-  "scope": "RESPONSE",
-  "removeHeaders": [null],
-  "whitelistHeaders": [
-    "X-Walter",
-    "X-White"
-  ]
+    "scope": "RESPONSE",
+    "removeHeaders": [null],
+    "whitelistHeaders": ["X-Walter", "X-White"]
 }

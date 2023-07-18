@@ -15,13 +15,11 @@
  */
 package io.gravitee.policy.transformheaders.configuration;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -38,13 +36,13 @@ public class TransformHeadersPolicyConfigurationTest {
             TransformHeadersPolicyConfiguration.class
         );
 
-        assertEquals(PolicyScope.REQUEST, configuration.getScope());
-        assertNotNull(configuration.getAddHeaders());
-        assertNotNull(configuration.getRemoveHeaders());
-        assertNull(configuration.getWhitelistHeaders());
+        assertThat(configuration.getScope()).isEqualTo(PolicyScope.REQUEST);
+        assertThat(configuration.getAddHeaders()).isNotNull();
+        assertThat(configuration.getRemoveHeaders()).isNotNull();
+        assertThat(configuration.getWhitelistHeaders()).isNull();
 
-        assertEquals(1, configuration.getAddHeaders().size());
-        assertEquals(1, configuration.getRemoveHeaders().size());
+        assertThat(configuration.getAddHeaders()).hasSize(1);
+        assertThat(configuration.getRemoveHeaders()).hasSize(1);
     }
 
     @Test
@@ -54,13 +52,13 @@ public class TransformHeadersPolicyConfigurationTest {
             TransformHeadersPolicyConfiguration.class
         );
 
-        assertEquals(PolicyScope.RESPONSE, configuration.getScope());
-        assertNotNull(configuration.getAddHeaders());
-        assertNotNull(configuration.getRemoveHeaders());
-        assertNull(configuration.getWhitelistHeaders());
+        assertThat(configuration.getScope()).isEqualTo(PolicyScope.RESPONSE);
+        assertThat(configuration.getAddHeaders()).isNotNull();
+        assertThat(configuration.getRemoveHeaders()).isNotNull();
+        assertThat(configuration.getWhitelistHeaders()).isNull();
 
-        assertEquals(1, configuration.getAddHeaders().size());
-        assertEquals(1, configuration.getRemoveHeaders().size());
+        assertThat(configuration.getAddHeaders()).hasSize(1);
+        assertThat(configuration.getRemoveHeaders()).hasSize(1);
     }
 
     @Test
@@ -70,13 +68,13 @@ public class TransformHeadersPolicyConfigurationTest {
             TransformHeadersPolicyConfiguration.class
         );
 
-        assertEquals(PolicyScope.RESPONSE, configuration.getScope());
-        assertNotNull(configuration.getAddHeaders());
-        assertNotNull(configuration.getRemoveHeaders());
-        assertNull(configuration.getWhitelistHeaders());
+        assertThat(configuration.getScope()).isEqualTo(PolicyScope.RESPONSE);
+        assertThat(configuration.getAddHeaders()).isNotNull();
+        assertThat(configuration.getRemoveHeaders()).isNotNull();
+        assertThat(configuration.getWhitelistHeaders()).isNull();
 
-        assertEquals(2, configuration.getAddHeaders().size());
-        assertEquals(1, configuration.getRemoveHeaders().size());
+        assertThat(configuration.getAddHeaders()).hasSize(2);
+        assertThat(configuration.getRemoveHeaders()).hasSize(1);
     }
 
     @Test
@@ -86,13 +84,13 @@ public class TransformHeadersPolicyConfigurationTest {
             TransformHeadersPolicyConfiguration.class
         );
 
-        assertEquals(PolicyScope.RESPONSE, configuration.getScope());
-        assertNull(configuration.getAddHeaders());
-        assertNotNull(configuration.getRemoveHeaders());
-        assertNotNull(configuration.getWhitelistHeaders());
+        assertThat(configuration.getScope()).isEqualTo(PolicyScope.RESPONSE);
+        assertThat(configuration.getAddHeaders()).isNull();
+        assertThat(configuration.getRemoveHeaders()).isNotNull();
+        assertThat(configuration.getWhitelistHeaders()).isNotNull();
 
-        assertEquals(1, configuration.getRemoveHeaders().size());
-        assertEquals(2, configuration.getWhitelistHeaders().size());
+        assertThat(configuration.getRemoveHeaders()).hasSize(1);
+        assertThat(configuration.getWhitelistHeaders()).hasSize(2);
     }
 
     private <T> T load(String resource, Class<T> type) throws IOException {

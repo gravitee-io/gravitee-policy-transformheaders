@@ -16,13 +16,7 @@
 package io.gravitee.policy.transformheaders.configuration;
 
 import io.gravitee.policy.api.PolicyConfiguration;
-import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)

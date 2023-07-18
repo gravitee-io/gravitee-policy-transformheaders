@@ -16,6 +16,7 @@
 package io.gravitee.policy.transformheaders.v3;
 
 import io.gravitee.apim.gateway.tests.sdk.annotations.GatewayTest;
+import io.gravitee.definition.model.ExecutionMode;
 
-@GatewayTest
+@GatewayTest(v2ExecutionMode = ExecutionMode.V4_EMULATION_ENGINE)
 class TransformHeadersPolicyV4EmulationIntegrationTest extends TransformHeadersPolicyV3IntegrationTest {}

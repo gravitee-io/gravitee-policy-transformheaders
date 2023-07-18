@@ -15,6 +15,7 @@
  */
 package io.gravitee.policy.transformheaders.v3;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -32,7 +33,6 @@ import io.gravitee.gateway.api.Response;
 import io.gravitee.gateway.api.buffer.Buffer;
 import io.gravitee.gateway.api.http.HttpHeaders;
 import io.gravitee.policy.api.PolicyChain;
-import io.gravitee.policy.transformheaders.TransformHeadersPolicy;
 import io.gravitee.policy.transformheaders.configuration.HttpHeader;
 import io.gravitee.policy.transformheaders.configuration.PolicyScope;
 import io.gravitee.policy.transformheaders.configuration.TransformHeadersPolicyConfiguration;
@@ -69,7 +69,8 @@ public class TransformHeadersPolicyV3Test {
     @Mock
     private Request request;
 
-    private HttpHeaders requestHttpHeaders = HttpHeaders.create(), responseHttpHeaders = HttpHeaders.create();
+    private final HttpHeaders requestHttpHeaders = HttpHeaders.create();
+    private HttpHeaders responseHttpHeaders = HttpHeaders.create();
 
     @Mock
     private Response response;
@@ -129,7 +130,7 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertEquals("Value", requestHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertThat(requestHttpHeaders.getFirst("X-Gravitee-Test")).isEqualTo("Value");
     }
 
     @Test
@@ -145,7 +146,7 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertEquals("Value", responseHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertThat(responseHttpHeaders.getFirst("X-Gravitee-Test")).isEqualTo("Value");
     }
 
     @Test
@@ -160,8 +161,8 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertEquals("Header1", responseHttpHeaders.getFirst("X-Gravitee-Header1"));
-        assertEquals("Header2", responseHttpHeaders.getFirst("X-Gravitee-Header2"));
+        assertThat(responseHttpHeaders.getFirst("X-Gravitee-Header1")).isEqualTo("Header1");
+        assertThat(responseHttpHeaders.getFirst("X-Gravitee-Header2")).isEqualTo("Header2");
     }
 
     @Test
@@ -175,7 +176,7 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertNull(requestHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertThat(requestHttpHeaders.getFirst("X-Gravitee-Test")).isNull();
     }
 
     @Test
@@ -190,7 +191,7 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertNull(responseHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertThat(responseHttpHeaders.getFirst("X-Gravitee-Test")).isNull();
     }
 
     @Test
@@ -203,7 +204,7 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertNull(requestHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertThat(requestHttpHeaders.getFirst("X-Gravitee-Test")).isNull();
     }
 
     @Test
@@ -217,7 +218,7 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertNull(requestHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertThat(requestHttpHeaders.getFirst("X-Gravitee-Test")).isNull();
     }
 
     @Test
@@ -232,7 +233,7 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertEquals("Value", requestHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertThat(requestHttpHeaders.getFirst("X-Gravitee-Test")).isEqualTo("Value");
     }
 
     @Test
@@ -248,7 +249,7 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertEquals("Value", responseHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertThat(responseHttpHeaders.getFirst("X-Gravitee-Test")).isEqualTo("Value");
     }
 
     @Test
@@ -262,7 +263,7 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertNull(requestHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertThat(requestHttpHeaders.getFirst("X-Gravitee-Test")).isNull();
     }
 
     @Test
@@ -278,7 +279,7 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertNull(responseHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertThat(responseHttpHeaders.getFirst("X-Gravitee-Test")).isNull();
     }
 
     @Test
@@ -294,7 +295,7 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertEquals(responseHttpHeaders.getFirst("X-Gravitee-Test"), "Initial");
+        assertThat(responseHttpHeaders.getFirst("X-Gravitee-Test")).isEqualTo("Initial");
     }
 
     @Test
@@ -313,9 +314,9 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertNull(responseHttpHeaders.getFirst("X-Gravitee-ToRemove"));
-        assertNull(responseHttpHeaders.getFirst("X-Gravitee-Black"));
-        assertNotNull(responseHttpHeaders.getFirst("X-Gravitee-White"));
+        assertThat(responseHttpHeaders.getFirst("X-Gravitee-ToRemove")).isNull();
+        assertThat(responseHttpHeaders.getFirst("X-Gravitee-Black")).isNull();
+        assertThat(responseHttpHeaders.getFirst("X-Gravitee-White")).isNotNull();
     }
 
     @Test
@@ -329,7 +330,7 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertNotNull(responseHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertThat(responseHttpHeaders.getFirst("X-Gravitee-Test")).isNotNull();
     }
 
     @Test
@@ -343,7 +344,7 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertNotNull(requestHttpHeaders.getFirst("X-Gravitee-Test"));
+        assertThat(requestHttpHeaders.getFirst("X-Gravitee-Test")).isNotNull();
     }
 
     @Test
@@ -359,8 +360,8 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertNull(responseHttpHeaders.getFirst("X-Walter"));
-        assertNotNull(responseHttpHeaders.getFirst("X-White"));
+        assertThat(responseHttpHeaders.getFirst("X-Walter")).isNull();
+        assertThat(responseHttpHeaders.getFirst("X-White")).isNotNull();
     }
 
     @Test
@@ -376,8 +377,8 @@ public class TransformHeadersPolicyV3Test {
 
         // Verify
         verify(policyChain).doNext(request, response);
-        assertNull(requestHttpHeaders.getFirst("X-Walter"));
-        assertNotNull(requestHttpHeaders.getFirst("X-White"));
+        assertThat(requestHttpHeaders.getFirst("X-Walter")).isNull();
+        assertThat(requestHttpHeaders.getFirst("X-White")).isNotNull();
     }
 
     @Test
@@ -397,8 +398,7 @@ public class TransformHeadersPolicyV3Test {
             .end();
 
         // Verify
-        assertNotNull(requestHttpHeaders.getFirst("X-Product-Id"));
-        assertEquals("1234", requestHttpHeaders.getFirst("X-Product-Id"));
+        assertThat(requestHttpHeaders.getFirst("X-Product-Id")).isNotNull().isEqualTo("1234");
     }
 
     @Test
@@ -418,7 +418,6 @@ public class TransformHeadersPolicyV3Test {
             .end();
 
         // Verify
-        assertNotNull(responseHttpHeaders.getFirst("X-Product-Id"));
-        assertEquals("1234", responseHttpHeaders.getFirst("X-Product-Id"));
+        assertThat(responseHttpHeaders.getFirst("X-Product-Id")).isNotNull().isEqualTo("1234");
     }
 }

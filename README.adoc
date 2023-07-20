@@ -12,8 +12,9 @@ endif::[]
 |===
 |Plugin version | APIM version
 
-|1.x                 | 3.x or lower
-|2.x and upper       | 4.x or higher
+|1.x            | 3.x
+|3.x            | 4.0 to latest
+
 |===
 
 == Phase

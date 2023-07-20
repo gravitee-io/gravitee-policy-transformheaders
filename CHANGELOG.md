@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/3.0.0...3.0.1) (2023-07-20)
+
+
+### Bug Fixes
+
+* update policy description ([09173df](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/09173dff95254f61d93131975d2e23861c166e88))
+
 # [3.0.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/2.0.1...3.0.0) (2023-07-18)
 
 

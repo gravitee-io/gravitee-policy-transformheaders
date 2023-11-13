@@ -194,7 +194,7 @@ public class TransformHeadersPolicy {
             httpHeaders
                 .names()
                 .forEach(headerName -> {
-                    if (!transformHeadersPolicyConfiguration.getWhitelistHeaders().contains(headerName)) {
+                    if (transformHeadersPolicyConfiguration.getWhitelistHeaders().stream().noneMatch(headerName::equalsIgnoreCase)) {
                         headersToRemove.add(headerName);
                     }
                 });

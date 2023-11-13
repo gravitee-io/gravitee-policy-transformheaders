@@ -99,11 +99,11 @@ class TransformHeadersPolicyV4IntegrationTest extends AbstractPolicyTest<Transfo
             get("/endpoint")
                 .willReturn(
                     ok()
-                        .withHeader("toUpdateKeyResponse", "responseToUpdate")
-                        .withHeader("toRemoveKeyResponse", "willBeRemoved")
-                        .withHeader("whitelistedKeyResponse", "whitelisted")
-                        .withHeader("notInWhitelistKeyResponse1", "excluded")
-                        .withHeader("notInWhitelistKeyResponse2", "excluded")
+                        .withHeader("toupdatekeyresponse", "responseToUpdate")
+                        .withHeader("toremovekeyresponse", "willBeRemoved")
+                        .withHeader("whitelistedkeyresponse", "whitelisted")
+                        .withHeader("notinwhitelistkeyresponse1", "excluded")
+                        .withHeader("notinwhitelistkeyresponse2", "excluded")
                 )
         );
 
@@ -111,11 +111,11 @@ class TransformHeadersPolicyV4IntegrationTest extends AbstractPolicyTest<Transfo
             .request(HttpMethod.GET, "/test")
             .flatMap(request ->
                 request
-                    .putHeader("toUpdateKey", "firstValue")
-                    .putHeader("toRemoveKey", "willBeRemoved")
-                    .putHeader("whitelistedKey", "whitelisted")
-                    .putHeader("notInWhitelistKey1", "excluded")
-                    .putHeader("notInWhitelistKey2", "excluded")
+                    .putHeader("toupdatekey", "firstValue")
+                    .putHeader("toremovekey", "willBeRemoved")
+                    .putHeader("whitelistedkey", "whitelisted")
+                    .putHeader("notinwhitelistkey1", "excluded")
+                    .putHeader("notinwhitelistkey2", "excluded")
                     .rxSend()
             )
             .test();
@@ -137,12 +137,12 @@ class TransformHeadersPolicyV4IntegrationTest extends AbstractPolicyTest<Transfo
 
         wiremock.verify(
             getRequestedFor(urlPathEqualTo("/endpoint"))
-                .withHeader("headerKey", equalTo("headerValue"))
-                .withHeader("toUpdateKey", equalTo("updatedValue"))
-                .withHeader("whitelistedKey", equalTo("whitelisted"))
-                .withoutHeader("toRemoveKey")
-                .withoutHeader("notInWhitelistKey1")
-                .withoutHeader("notInWhitelistKey2")
+                .withHeader("headerkey", equalTo("headerValue"))
+                .withHeader("toupdatekey", equalTo("updatedValue"))
+                .withHeader("whitelistedkey", equalTo("whitelisted"))
+                .withoutHeader("toremovekey")
+                .withoutHeader("notinwhitelistkey1")
+                .withoutHeader("notinwhitelistkey2")
         );
     }
 
@@ -153,11 +153,11 @@ class TransformHeadersPolicyV4IntegrationTest extends AbstractPolicyTest<Transfo
             .rxRequest(POST, "/test")
             .flatMap(request ->
                 request
-                    .putHeader("toUpdateKey", "firstValue")
-                    .putHeader("toRemoveKey", "willBeRemoved")
-                    .putHeader("whitelistedKey", "whitelisted")
-                    .putHeader("notInWhitelistKey1", "excluded")
-                    .putHeader("notInWhitelistKey2", "excluded")
+                    .putHeader("toupdatekey", "firstValue")
+                    .putHeader("toremovekey", "willBeRemoved")
+                    .putHeader("whitelistedkey", "whitelisted")
+                    .putHeader("notinwhitelistkey1", "excluded")
+                    .putHeader("notinwhitelistkey2", "excluded")
                     .rxSend("message")
             )
             .flatMap(response -> {

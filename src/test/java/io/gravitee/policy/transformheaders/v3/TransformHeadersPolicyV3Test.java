@@ -301,9 +301,9 @@ public class TransformHeadersPolicyV3Test {
     @Test
     void test_OnResponse_removeHeaderAndWhiteList() {
         // Prepare
-        responseHttpHeaders.set("X-Gravitee-ToRemove", "Initial");
-        responseHttpHeaders.set("X-Gravitee-White", "Initial");
-        responseHttpHeaders.set("X-Gravitee-Black", "Initial");
+        responseHttpHeaders.set("x-gravitee-toremove", "Initial");
+        responseHttpHeaders.set("x-gravitee-white", "Initial");
+        responseHttpHeaders.set("x-gravitee-black", "Initial");
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
         when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(null);
         when(transformHeadersPolicyConfiguration.getRemoveHeaders()).thenReturn(Collections.singletonList("X-Gravitee-ToRemove"));
@@ -350,8 +350,8 @@ public class TransformHeadersPolicyV3Test {
     @Test
     void test_OnResponse_whitelistHeader() {
         // Prepare
-        responseHttpHeaders.set("X-Walter", "Initial");
-        responseHttpHeaders.set("X-White", "Initial");
+        responseHttpHeaders.set("x-walter", "Initial");
+        responseHttpHeaders.set("x-white", "Initial");
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
         when(transformHeadersPolicyConfiguration.getWhitelistHeaders()).thenReturn(Collections.singletonList("X-White"));
 
@@ -367,8 +367,8 @@ public class TransformHeadersPolicyV3Test {
     @Test
     void test_OnRequest_whitelistHeader() {
         // Prepare
-        requestHttpHeaders.set("X-Walter", "Initial");
-        requestHttpHeaders.set("X-White", "Initial");
+        requestHttpHeaders.set("x-walter", "Initial");
+        requestHttpHeaders.set("x-white", "Initial");
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.REQUEST);
         when(transformHeadersPolicyConfiguration.getWhitelistHeaders()).thenReturn(Collections.singletonList("X-White"));
 

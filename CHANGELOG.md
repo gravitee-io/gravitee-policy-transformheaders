@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/1.10.0...1.10.1) (2023-11-13)
+
+
+### Bug Fixes
+
+* make acceptlist case insensitive ([81b626d](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/81b626d9644741f011acf3df4810c822ae3074f2))
+
 # [1.10.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/1.9.1...1.10.0) (2022-03-24)
 
 

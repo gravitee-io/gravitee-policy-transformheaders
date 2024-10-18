@@ -22,6 +22,8 @@ import io.gravitee.gateway.reactive.api.context.HttpExecutionContext;
 import io.gravitee.gateway.reactive.api.context.MessageExecutionContext;
 import io.gravitee.gateway.reactive.api.message.Message;
 import io.gravitee.gateway.reactive.api.policy.Policy;
+import io.gravitee.node.api.secrets.runtime.grant.RuntimeContext;
+import io.gravitee.node.api.secrets.runtime.spec.ValueKind;
 import io.gravitee.policy.transformheaders.configuration.TransformHeadersPolicyConfiguration;
 import io.gravitee.policy.transformheaders.v3.TransformHeadersPolicyV3;
 import io.reactivex.rxjava3.core.Completable;
@@ -91,12 +93,18 @@ public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements 
             .fromCallable(configuration::getAddHeaders)
             .flatMapPublisher(Flowable::fromIterable)
             .filter(httpHeader -> httpHeader.getName() != null && !httpHeader.getName().trim().isEmpty() && httpHeader.getValue() != null)
-            .flatMapCompletable(httpHeader ->
+            .flatMapCompletable(httpHeader -> {
                 templateEngine
+                    .getTemplateContext()
+                    .setVariable(RuntimeContext.EL_VARIABLE, new RuntimeContext(true, ValueKind.HEADER, httpHeader.getName()));
+                return templateEngine
                     .eval(httpHeader.getValue(), String.class)
                     .doOnSuccess(newValue -> httpHeaders.set(httpHeader.getName(), newValue))
-                    .ignoreElement()
-            )
+                    .doFinally(() -> {
+                        templateEngine.getTemplateContext().setVariable(RuntimeContext.EL_VARIABLE, null);
+                    })
+                    .ignoreElement();
+            })
             .andThen(
                 Completable.fromRunnable(() -> {
                     // verify the whitelist

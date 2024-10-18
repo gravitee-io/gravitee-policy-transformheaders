@@ -17,6 +17,7 @@ package io.gravitee.policy.transformheaders.v3;
 
 import static io.gravitee.gateway.api.ExecutionContext.ATTR_API;
 
+import io.gravitee.el.TemplateContext;
 import io.gravitee.gateway.api.ExecutionContext;
 import io.gravitee.gateway.api.Request;
 import io.gravitee.gateway.api.Response;
@@ -27,6 +28,8 @@ import io.gravitee.gateway.api.http.HttpHeaders;
 import io.gravitee.gateway.api.stream.BufferedReadWriteStream;
 import io.gravitee.gateway.api.stream.ReadWriteStream;
 import io.gravitee.gateway.api.stream.SimpleReadWriteStream;
+import io.gravitee.node.api.secrets.runtime.grant.RuntimeContext;
+import io.gravitee.node.api.secrets.runtime.spec.ValueKind;
 import io.gravitee.policy.api.PolicyChain;
 import io.gravitee.policy.api.annotations.OnRequest;
 import io.gravitee.policy.api.annotations.OnRequestContent;
@@ -39,8 +42,6 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 /**
@@ -152,7 +153,12 @@ public class TransformHeadersPolicyV3 {
                 .getAddHeaders()
                 .forEach(header -> {
                     if (header.getName() != null && !header.getName().trim().isEmpty()) {
+                        TemplateContext templateContext = executionContext.getTemplateEngine().getTemplateContext();
                         try {
+                            templateContext.setVariable(
+                                RuntimeContext.EL_VARIABLE,
+                                new RuntimeContext(true, ValueKind.HEADER, header.getName())
+                            );
                             String extValue = (header.getValue() != null)
                                 ? executionContext.getTemplateEngine().convert(header.getValue())
                                 : null;
@@ -172,6 +178,8 @@ public class TransformHeadersPolicyV3 {
                                 ex.getCause()
                             );
                             MDC.remove("api");
+                        } finally {
+                            templateContext.setVariable(RuntimeContext.EL_VARIABLE, null);
                         }
                     }
                 });

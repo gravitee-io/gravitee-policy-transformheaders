@@ -30,20 +30,20 @@
     <parent>
         <groupId>io.gravitee</groupId>
         <artifactId>gravitee-parent</artifactId>
-        <version>22.0.2</version>
+        <version>22.0.31</version>
     </parent>
 
     <properties>
-        <gravitee-bom.version>6.0.3</gravitee-bom.version>
-        <gravitee-gateway-api.version>3.0.0</gravitee-gateway-api.version>
-        <gravitee-node.version>4.0.0</gravitee-node.version>
+        <gravitee-bom.version>8.1.0</gravitee-bom.version>
+        <gravitee-gateway-api.version>3.5.3</gravitee-gateway-api.version>
+        <gravitee-node.version>6.4.4</gravitee-node.version>
         <gravitee-policy-api.version>1.11.0</gravitee-policy-api.version>
-        <gravitee-common.version>2.1.1</gravitee-common.version>
-        <gravitee-expression-language.version>3.0.0</gravitee-expression-language.version>
-        <gravitee-apim.version>4.0.0-SNAPSHOT</gravitee-apim.version>
-        <gravitee-sse.version>4.0.0</gravitee-sse.version>
-        <gravitee-http-post.version>1.0.0</gravitee-http-post.version>
-        <gravitee-reactor-message.version>1.0.1</gravitee-reactor-message.version>
+        <gravitee-common.version>3.3.3</gravitee-common.version>
+        <gravitee-expression-language.version>3.2.3</gravitee-expression-language.version>
+        <gravitee-apim.version>4.6.0-SNAPSHOT</gravitee-apim.version>
+        <gravitee-sse.version>4.1.0</gravitee-sse.version>
+        <gravitee-http-post.version>1.2.0</gravitee-http-post.version>
+        <gravitee-reactor-message.version>4.0.0</gravitee-reactor-message.version>
 
         <maven-plugin-assembly.version>3.6.0</maven-plugin-assembly.version>
         <maven-plugin-properties.version>1.1.0</maven-plugin-properties.version>
@@ -128,6 +128,12 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.gravitee.node</groupId>
+            <artifactId>gravitee-node-api</artifactId>
+            <version>${gravitee-node.version}</version>
             <scope>provided</scope>
         </dependency>
 

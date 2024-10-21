@@ -17,6 +17,8 @@ package io.gravitee.policy.transformheaders.v3;
 
 import static io.gravitee.gateway.api.ExecutionContext.ATTR_API;
 
+import io.gravitee.common.secrets.RuntimeContext;
+import io.gravitee.common.secrets.ValueKind;
 import io.gravitee.el.TemplateContext;
 import io.gravitee.gateway.api.ExecutionContext;
 import io.gravitee.gateway.api.Request;
@@ -28,8 +30,6 @@ import io.gravitee.gateway.api.http.HttpHeaders;
 import io.gravitee.gateway.api.stream.BufferedReadWriteStream;
 import io.gravitee.gateway.api.stream.ReadWriteStream;
 import io.gravitee.gateway.api.stream.SimpleReadWriteStream;
-import io.gravitee.node.api.secrets.runtime.grant.RuntimeContext;
-import io.gravitee.node.api.secrets.runtime.spec.ValueKind;
 import io.gravitee.policy.api.PolicyChain;
 import io.gravitee.policy.api.annotations.OnRequest;
 import io.gravitee.policy.api.annotations.OnRequestContent;

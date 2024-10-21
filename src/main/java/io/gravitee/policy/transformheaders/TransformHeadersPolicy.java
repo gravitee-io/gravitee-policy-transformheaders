@@ -15,6 +15,8 @@
  */
 package io.gravitee.policy.transformheaders;
 
+import io.gravitee.common.secrets.RuntimeContext;
+import io.gravitee.common.secrets.ValueKind;
 import io.gravitee.el.TemplateEngine;
 import io.gravitee.gateway.api.http.HttpHeaders;
 import io.gravitee.gateway.reactive.api.ExecutionFailure;
@@ -22,8 +24,6 @@ import io.gravitee.gateway.reactive.api.context.HttpExecutionContext;
 import io.gravitee.gateway.reactive.api.context.MessageExecutionContext;
 import io.gravitee.gateway.reactive.api.message.Message;
 import io.gravitee.gateway.reactive.api.policy.Policy;
-import io.gravitee.node.api.secrets.runtime.grant.RuntimeContext;
-import io.gravitee.node.api.secrets.runtime.spec.ValueKind;
 import io.gravitee.policy.transformheaders.configuration.TransformHeadersPolicyConfiguration;
 import io.gravitee.policy.transformheaders.v3.TransformHeadersPolicyV3;
 import io.reactivex.rxjava3.core.Completable;

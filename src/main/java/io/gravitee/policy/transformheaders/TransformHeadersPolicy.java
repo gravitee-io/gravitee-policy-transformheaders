@@ -15,8 +15,8 @@
  */
 package io.gravitee.policy.transformheaders;
 
+import io.gravitee.common.secrets.FieldKind;
 import io.gravitee.common.secrets.RuntimeContext;
-import io.gravitee.common.secrets.ValueKind;
 import io.gravitee.el.TemplateEngine;
 import io.gravitee.gateway.api.http.HttpHeaders;
 import io.gravitee.gateway.reactive.api.ExecutionFailure;
@@ -96,13 +96,11 @@ public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements 
             .flatMapCompletable(httpHeader -> {
                 templateEngine
                     .getTemplateContext()
-                    .setVariable(RuntimeContext.EL_VARIABLE, new RuntimeContext(true, ValueKind.HEADER, httpHeader.getName()));
+                    .setVariable(RuntimeContext.EL_VARIABLE, new RuntimeContext(true, FieldKind.HEADER, httpHeader.getName()));
                 return templateEngine
                     .eval(httpHeader.getValue(), String.class)
                     .doOnSuccess(newValue -> httpHeaders.set(httpHeader.getName(), newValue))
-                    .doFinally(() -> {
-                        templateEngine.getTemplateContext().setVariable(RuntimeContext.EL_VARIABLE, null);
-                    })
+                    .doFinally(() -> templateEngine.getTemplateContext().setVariable(RuntimeContext.EL_VARIABLE, null))
                     .ignoreElement();
             })
             .andThen(

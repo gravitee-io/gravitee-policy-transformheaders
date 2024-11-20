@@ -17,8 +17,8 @@ package io.gravitee.policy.transformheaders.v3;
 
 import static io.gravitee.gateway.api.ExecutionContext.ATTR_API;
 
+import io.gravitee.common.secrets.FieldKind;
 import io.gravitee.common.secrets.RuntimeContext;
-import io.gravitee.common.secrets.ValueKind;
 import io.gravitee.el.TemplateContext;
 import io.gravitee.gateway.api.ExecutionContext;
 import io.gravitee.gateway.api.Request;
@@ -157,7 +157,7 @@ public class TransformHeadersPolicyV3 {
                         try {
                             templateContext.setVariable(
                                 RuntimeContext.EL_VARIABLE,
-                                new RuntimeContext(true, ValueKind.HEADER, header.getName())
+                                new RuntimeContext(true, FieldKind.HEADER, header.getName())
                             );
                             String extValue = (header.getValue() != null)
                                 ? executionContext.getTemplateEngine().convert(header.getValue())

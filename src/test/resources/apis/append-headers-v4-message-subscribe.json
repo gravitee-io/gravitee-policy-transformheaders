@@ -1,0 +1,81 @@
+{
+    "id": "my-api",
+    "name": "my-api",
+    "apiVersion": "1.0",
+    "definitionVersion": "4.0.0",
+    "type": "message",
+    "listeners": [
+        {
+            "type": "http",
+            "paths": [
+                {
+                    "path": "/test"
+                }
+            ],
+            "entrypoints": [
+                {
+                    "type": "sse",
+                    "configuration": {
+                        "headersAsComment": true
+                    }
+                }
+            ]
+        }
+    ],
+    "endpointGroups": [
+        {
+            "name": "default-group",
+            "type": "mock",
+            "endpoints": [
+                {
+                    "name": "default",
+                    "type": "mock",
+                    "weight": 1,
+                    "inheritConfiguration": false,
+                    "configuration": {
+                        "messageCount": 1,
+                        "messageContent": "{ \"message\": \"hello\" }",
+                        "headers": [
+                            {
+                                "name": "headerKeyResponse",
+                                "value": "headerValue0"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "flows": [
+        {
+            "name": "flow-1",
+            "enabled": true,
+            "request": [],
+            "response": [],
+            "publish": [],
+            "subscribe": [
+                {
+                    "name": "Transform Headers",
+                    "description": "Transform Headers on request",
+                    "enabled": true,
+                    "policy": "transform-headers",
+                    "configuration": {
+                        "appendHeaders": [
+                            {
+                                "name": "headerKeyResponse",
+                                "value": "headerValue1"
+                            },
+                            {
+                                "name": "headerKeyResponse",
+                                "value": "headerValue2"
+                            }
+                        ],
+                        "whitelistHeaders": ["headerKeyResponse", "toUpdateKeyResponse", "whitelistedKeyResponse", "toRemoveKeyResponse"],
+                        "removeHeaders": ["toRemoveKeyResponse"],
+                        "scope": "RESPONSE"
+                    }
+                }
+            ]
+        }
+    ]
+}

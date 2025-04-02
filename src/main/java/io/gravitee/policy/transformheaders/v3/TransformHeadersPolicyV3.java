@@ -177,7 +177,40 @@ public class TransformHeadersPolicyV3 {
                 });
         }
 
-        // verify the whitelist
+        if (configuration.getAppendHeaders() != null) {
+            configuration
+                .getAppendHeaders()
+                .forEach(header -> {
+                    if (header.getName() != null && !header.getName().trim().isEmpty()) {
+                        try {
+                            String extValue = (header.getValue() != null)
+                                ? executionContext.getTemplateEngine().convert(header.getValue())
+                                : null;
+                            if (extValue != null) {
+                                httpHeaders.add(header.getName(), extValue);
+                            }
+                        } catch (Exception ex) {
+                            MDC.put("api", String.valueOf(executionContext.getAttribute(ATTR_API)));
+                            log.error(
+                                String.format(
+                                    ERROR_MESSAGE_FORMAT,
+                                    executionContext.getAttribute(ATTR_API),
+                                    executionContext.request().id(),
+                                    executionContext.request().path(),
+                                    ex.getMessage()
+                                ),
+                                ex.getCause()
+                            );
+                            MDC.remove("api");
+                        }
+                    }
+                });
+        }
+
+        removeHeaders(httpHeaders);
+    }
+
+    protected void removeHeaders(final HttpHeaders httpHeaders) {
         List<String> headersToRemove = configuration.getRemoveHeaders() == null
             ? new ArrayList<>()
             : new ArrayList<>(configuration.getRemoveHeaders());

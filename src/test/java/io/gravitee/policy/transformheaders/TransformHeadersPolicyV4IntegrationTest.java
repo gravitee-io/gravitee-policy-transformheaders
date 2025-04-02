@@ -15,21 +15,17 @@
  */
 package io.gravitee.policy.transformheaders;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.vertx.core.http.HttpMethod.POST;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.github.tomakehurst.wiremock.matching.MultiValuePattern;
 import com.graviteesource.entrypoint.http.post.HttpPostEntrypointConnectorFactory;
 import com.graviteesource.entrypoint.sse.SseEntrypointConnectorFactory;
 import com.graviteesource.reactor.message.MessageApiReactorFactory;
 import io.gravitee.apim.gateway.tests.sdk.AbstractPolicyTest;
 import io.gravitee.apim.gateway.tests.sdk.annotations.DeployApi;
 import io.gravitee.apim.gateway.tests.sdk.annotations.GatewayTest;
-import io.gravitee.apim.gateway.tests.sdk.configuration.GatewayConfigurationBuilder;
 import io.gravitee.apim.gateway.tests.sdk.connector.EndpointBuilder;
 import io.gravitee.apim.gateway.tests.sdk.connector.EntrypointBuilder;
 import io.gravitee.apim.gateway.tests.sdk.connector.fakes.MessageStorage;
@@ -48,6 +44,7 @@ import io.gravitee.policy.transformheaders.v3.TransformHeadersPolicyV3;
 import io.reactivex.rxjava3.observers.TestObserver;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.rxjava3.core.http.HttpClient;
+import io.vertx.rxjava3.core.http.HttpClientRequest;
 import io.vertx.rxjava3.core.http.HttpClientResponse;
 import java.util.Map;
 import java.util.Set;
@@ -147,6 +144,30 @@ class TransformHeadersPolicyV4IntegrationTest extends AbstractPolicyTest<Transfo
     }
 
     @Test
+    @DeployApi("/apis/append-headers-v4-proxy.json")
+    void should_append_headers_with_proxy_api(HttpClient client) throws InterruptedException {
+        wiremock.stubFor(get("/endpoint").willReturn(ok().withHeader("headerKeyResponse", "headerValue0")));
+
+        final TestObserver<HttpClientResponse> obs = client.request(HttpMethod.GET, "/test").flatMap(HttpClientRequest::rxSend).test();
+
+        awaitTerminalEvent(obs);
+        obs
+            .assertComplete()
+            .assertValue(response -> {
+                assertThat(response.statusCode()).isEqualTo(200);
+                assertThat(response.headers().getAll("headerKeyResponse")).contains("headerValue0", "headerValue1", "headerValue2");
+                return true;
+            })
+            .assertNoErrors();
+
+        wiremock.verify(
+            getRequestedFor(urlPathEqualTo("/endpoint"))
+                .withHeader("headerkey", containing("headerValue1"))
+                .withHeader("headerkey", containing("headerValue2"))
+        );
+    }
+
+    @Test
     @DeployApi("/apis/add-update-whitelist-remove-headers-v4-message-publish.json")
     void should_add_update_and_remove_headers_on_request_message(HttpClient httpClient) throws InterruptedException {
         httpClient
@@ -183,6 +204,29 @@ class TransformHeadersPolicyV4IntegrationTest extends AbstractPolicyTest<Transfo
     }
 
     @Test
+    @DeployApi("/apis/append-headers-v4-message-publish.json")
+    void should_append_headers_on_request_message(HttpClient httpClient) throws InterruptedException {
+        httpClient
+            .rxRequest(POST, "/test")
+            .flatMap(request -> request.putHeader("headerKey", "headerValue0").rxSend("message"))
+            .flatMap(response -> {
+                assertThat(response.statusCode()).isEqualTo(202);
+                return response.body();
+            })
+            .test()
+            .awaitDone(5, TimeUnit.SECONDS);
+
+        messageStorage
+            .subject()
+            .test()
+            .assertValue(message -> {
+                assertThat(message.headers().getAll("headerKey")).contains("headerValue0", "headerValue1", "headerValue2");
+                return true;
+            })
+            .dispose();
+    }
+
+    @Test
     @DeployApi("/apis/add-update-whitelist-remove-headers-v4-message-subscribe.json")
     void should_add_update_and_remove_headers_on_response_message(HttpClient httpClient) throws InterruptedException {
         httpClient
@@ -209,6 +253,36 @@ class TransformHeadersPolicyV4IntegrationTest extends AbstractPolicyTest<Transfo
                     assertThat(splitMessage[3]).isEqualTo(":whitelistedKeyResponse: whitelisted");
                     assertThat(splitMessage[4]).isEqualTo(":headerKeyResponse: headerValue");
                     assertThat(splitMessage[5]).isEqualTo(":toUpdateKeyResponse: updatedValue");
+                    return true;
+                }
+            );
+    }
+
+    @Test
+    @DeployApi("/apis/append-headers-v4-message-subscribe.json")
+    void should_append_headers_on_response_message(HttpClient httpClient) throws InterruptedException {
+        httpClient
+            .rxRequest(HttpMethod.GET, "/test")
+            .flatMap(request -> {
+                request.putHeader(HttpHeaderNames.ACCEPT.toString(), MediaType.TEXT_EVENT_STREAM);
+                return request.rxSend();
+            })
+            .flatMapPublisher(response -> {
+                assertThat(response.statusCode()).isEqualTo(200);
+                return response.toFlowable();
+            })
+            .filter(buffer -> !buffer.toString().startsWith("retry:") && !buffer.toString().startsWith(":"))
+            .test()
+            .awaitCount(1)
+            .assertValueAt(
+                0,
+                chunk -> {
+                    final String[] splitMessage = chunk.toString().split("\n");
+                    assertThat(splitMessage).hasSize(4);
+                    assertThat(splitMessage[0]).isEqualTo("id: 0");
+                    assertThat(splitMessage[1]).isEqualTo("event: message");
+                    assertThat(splitMessage[2]).isEqualTo("data: { \"message\": \"hello\" }");
+                    assertThat(splitMessage[3]).isEqualTo(":headerKeyResponse: headerValue0,headerValue1,headerValue2");
                     return true;
                 }
             );

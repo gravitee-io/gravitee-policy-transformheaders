@@ -27,8 +27,6 @@ import io.gravitee.policy.transformheaders.v3.TransformHeadersPolicyV3;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Maybe;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Guillaume Lamirand (guillaume.lamirand at graviteesource.com)
@@ -87,6 +85,12 @@ public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements 
     }
 
     private Completable transformHeaders(final TemplateEngine templateEngine, final HttpHeaders httpHeaders) {
+        return setHeaders(templateEngine, httpHeaders)
+            .andThen(appendHeaders(templateEngine, httpHeaders))
+            .andThen(Completable.fromRunnable(() -> removeHeaders(httpHeaders)));
+    }
+
+    private Completable setHeaders(final TemplateEngine templateEngine, final HttpHeaders httpHeaders) {
         return Maybe
             .fromCallable(configuration::getAddHeaders)
             .flatMapPublisher(Flowable::fromIterable)
@@ -96,33 +100,19 @@ public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements 
                     .eval(httpHeader.getValue(), String.class)
                     .doOnSuccess(newValue -> httpHeaders.set(httpHeader.getName(), newValue))
                     .ignoreElement()
-            )
-            .andThen(
-                Completable.fromRunnable(() -> {
-                    // verify the whitelist
-                    List<String> headersToRemove = configuration.getRemoveHeaders() == null
-                        ? new ArrayList<>()
-                        : new ArrayList<>(configuration.getRemoveHeaders());
+            );
+    }
 
-                    if (
-                        httpHeaders != null && configuration.getWhitelistHeaders() != null && !configuration.getWhitelistHeaders().isEmpty()
-                    ) {
-                        httpHeaders
-                            .names()
-                            .forEach(headerName -> {
-                                if (configuration.getWhitelistHeaders().stream().noneMatch(headerName::equalsIgnoreCase)) {
-                                    headersToRemove.add(headerName);
-                                }
-                            });
-                    }
-
-                    // Remove request headers
-                    headersToRemove.forEach(headerName -> {
-                        if (headerName != null && !headerName.trim().isEmpty()) {
-                            httpHeaders.remove(headerName);
-                        }
-                    });
-                })
+    private Completable appendHeaders(final TemplateEngine templateEngine, final HttpHeaders httpHeaders) {
+        return Maybe
+            .fromCallable(configuration::getAppendHeaders)
+            .flatMapPublisher(Flowable::fromIterable)
+            .filter(httpHeader -> httpHeader.getName() != null && !httpHeader.getName().trim().isEmpty() && httpHeader.getValue() != null)
+            .flatMapCompletable(httpHeader ->
+                templateEngine
+                    .eval(httpHeader.getValue(), String.class)
+                    .doOnSuccess(newValue -> httpHeaders.add(httpHeader.getName(), newValue))
+                    .ignoreElement()
             );
     }
 }

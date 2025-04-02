@@ -15,11 +15,7 @@
  */
 package io.gravitee.policy.transformheaders.v3;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.gravitee.apim.gateway.tests.sdk.AbstractPolicyTest;
@@ -30,6 +26,7 @@ import io.gravitee.policy.transformheaders.configuration.TransformHeadersPolicyC
 import io.reactivex.rxjava3.observers.TestObserver;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.rxjava3.core.http.HttpClient;
+import io.vertx.rxjava3.core.http.HttpClientRequest;
 import io.vertx.rxjava3.core.http.HttpClientResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -37,7 +34,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
 @GatewayTest(v2ExecutionMode = ExecutionMode.V3)
-@DeployApi("/apis/add-update-whitelist-remove-headers.json")
+@DeployApi("/apis/add-update-whitelist-remove-append-headers.json")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class TransformHeadersPolicyV3IntegrationTest extends AbstractPolicyTest<TransformHeadersPolicyV3, TransformHeadersPolicyConfiguration> {
 
@@ -92,6 +89,30 @@ class TransformHeadersPolicyV3IntegrationTest extends AbstractPolicyTest<Transfo
                 .withoutHeader("toremovekey")
                 .withoutHeader("notinwhitelistkey1")
                 .withoutHeader("notinwhitelistkey2")
+        );
+    }
+
+    @Test
+    @DisplayName("Should append headers")
+    void shouldAppendHeaders(HttpClient client) throws InterruptedException {
+        wiremock.stubFor(get("/endpoint").willReturn(ok().withHeader("headerKeyResponseAppend", "headerValue0")));
+
+        final TestObserver<HttpClientResponse> obs = client.request(HttpMethod.GET, "/test").flatMap(HttpClientRequest::rxSend).test();
+
+        awaitTerminalEvent(obs);
+        obs
+            .assertComplete()
+            .assertValue(response -> {
+                assertThat(response.statusCode()).isEqualTo(200);
+                assertThat(response.headers().getAll("headerKeyResponseAppend")).contains("headerValue0", "headerValue1", "headerValue2");
+                return true;
+            })
+            .assertNoErrors();
+
+        wiremock.verify(
+            getRequestedFor(urlPathEqualTo("/endpoint"))
+                .withHeader("headerkeyAppend", containing("headerValue1"))
+                .withHeader("headerkeyAppend", containing("headerValue2"))
         );
     }
 }

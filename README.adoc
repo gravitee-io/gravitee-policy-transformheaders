@@ -53,6 +53,12 @@ You can override the HTTP headers by:
             "value": "{#request.id}"
         }
     ],
+    "appendHeaders": [
+        {
+            "name": "Accept-Encoding",
+            "value": "gzip"
+        }
+    ],
     "removeHeaders": [
         "X-Gravitee-TransactionId"
     ],
@@ -64,7 +70,7 @@ You can override the HTTP headers by:
 }
 ----
 
-Add a header from the request's payload:
+Set / replace a header from the request's payload:
 
 [source, json]
 ----

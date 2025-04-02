@@ -17,12 +17,16 @@ package io.gravitee.policy.transformheaders.configuration;
 
 import io.gravitee.policy.api.PolicyConfiguration;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
  * @author Nicolas GERAUD (nicolas.geraud at graviteesource.com)
  * @author GraviteeSource Team
  */
+@Getter
+@Setter
 public class TransformHeadersPolicyConfiguration implements PolicyConfiguration {
 
     private PolicyScope scope = PolicyScope.REQUEST;
@@ -31,37 +35,7 @@ public class TransformHeadersPolicyConfiguration implements PolicyConfiguration 
 
     private List<HttpHeader> addHeaders = null;
 
+    private List<HttpHeader> appendHeaders = null;
+
     private List<String> whitelistHeaders = null;
-
-    public PolicyScope getScope() {
-        return scope;
-    }
-
-    public void setScope(PolicyScope scope) {
-        this.scope = scope;
-    }
-
-    public List<String> getRemoveHeaders() {
-        return removeHeaders;
-    }
-
-    public void setRemoveHeaders(List<String> removeHeaders) {
-        this.removeHeaders = removeHeaders;
-    }
-
-    public List<HttpHeader> getAddHeaders() {
-        return addHeaders;
-    }
-
-    public void setAddHeaders(List<HttpHeader> addHeaders) {
-        this.addHeaders = addHeaders;
-    }
-
-    public List<String> getWhitelistHeaders() {
-        return whitelistHeaders;
-    }
-
-    public void setWhitelistHeaders(List<String> whitelistHeaders) {
-        this.whitelistHeaders = whitelistHeaders;
-    }
 }

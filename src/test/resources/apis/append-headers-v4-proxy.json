@@ -1,0 +1,87 @@
+{
+    "id": "my-api",
+    "name": "my-api",
+    "apiVersion": "1.0",
+    "definitionVersion": "4.0.0",
+    "type": "proxy",
+    "listeners": [
+        {
+            "type": "http",
+            "paths": [
+                {
+                    "path": "/test"
+                }
+            ],
+            "entrypoints": [
+                {
+                    "type": "http-proxy"
+                }
+            ]
+        }
+    ],
+    "endpointGroups": [
+        {
+            "name": "default-group",
+            "type": "http-proxy",
+            "endpoints": [
+                {
+                    "name": "default",
+                    "type": "http-proxy",
+                    "weight": 1,
+                    "inheritConfiguration": false,
+                    "configuration": {
+                        "target": "http://localhost:8080/endpoint"
+                    }
+                }
+            ]
+        }
+    ],
+    "flows": [
+        {
+            "name": "flow-1",
+            "enabled": true,
+            "request": [
+                {
+                    "name": "Transform Headers",
+                    "description": "Transform Headers on request",
+                    "enabled": true,
+                    "policy": "transform-headers",
+                    "configuration": {
+                        "appendHeaders": [
+                            {
+                                "name": "headerKey",
+                                "value": "headerValue1"
+                            },
+                            {
+                                "name": "headerKey",
+                                "value": "headerValue2"
+                            }
+                        ],
+                        "scope": "REQUEST"
+                    }
+                }
+            ],
+            "response": [
+                {
+                    "name": "Transform Headers",
+                    "description": "Transform Headers on response",
+                    "enabled": true,
+                    "policy": "transform-headers",
+                    "configuration": {
+                        "appendHeaders": [
+                            {
+                                "name": "headerKeyResponse",
+                                "value": "headerValue1"
+                            },
+                            {
+                                "name": "headerKeyResponse",
+                                "value": "headerValue2"
+                            }
+                        ],
+                        "scope": "RESPONSE"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -41,8 +41,18 @@
                                 "value": "updatedValue"
                             }
                         ],
-                        "whitelistHeaders": ["headerKey", "toUpdateKey", "whitelistedKey", "toRemoveKey"],
+                        "whitelistHeaders": ["headerKey", "toUpdateKey", "whitelistedKey", "toRemoveKey", "headerKeyAppend"],
                         "removeHeaders": ["toRemoveKey"],
+                        "appendHeaders": [
+                            {
+                                "name": "headerKeyAppend",
+                                "value": "headerValue1"
+                            },
+                            {
+                                "name": "headerKeyAppend",
+                                "value": "headerValue2"
+                            }
+                        ],
                         "scope": "REQUEST"
                     }
                 }
@@ -64,8 +74,24 @@
                                 "value": "updatedValue"
                             }
                         ],
-                        "whitelistHeaders": ["headerKeyResponse", "toUpdateKeyResponse", "whitelistedKeyResponse", "toRemoveKeyResponse"],
+                        "whitelistHeaders": [
+                            "headerKeyResponse",
+                            "toUpdateKeyResponse",
+                            "whitelistedKeyResponse",
+                            "toRemoveKeyResponse",
+                            "headerKeyResponseAppend"
+                        ],
                         "removeHeaders": ["toRemoveKeyResponse"],
+                        "appendHeaders": [
+                            {
+                                "name": "headerKeyResponseAppend",
+                                "value": "headerValue1"
+                            },
+                            {
+                                "name": "headerKeyResponseAppend",
+                                "value": "headerValue2"
+                            }
+                        ],
                         "scope": "RESPONSE"
                     }
                 }

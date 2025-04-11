@@ -19,13 +19,17 @@ endif::[]
 
 == Phase
 
-[cols="4*", options="header"]
+[cols="6*", options="header"]
 |===
 ^|onRequest
 ^|onResponse
 ^|onRequestContent
 ^|onResponseContent
+^|onMessageRequest
+^|onMessageResponse
 
+^.^| X
+^.^| X
 ^.^| X
 ^.^| X
 ^.^| X
@@ -41,6 +45,8 @@ You can override the HTTP headers by:
 * Adding to or updating the list of headers
 * Removing headers individually
 * Defining a whitelist
+
+Updating a list of values for a given header is not supported for Native APIs.
 
 == Example
 

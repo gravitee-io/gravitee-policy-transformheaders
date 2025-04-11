@@ -16,23 +16,33 @@
 package io.gravitee.policy.transformheaders;
 
 import io.gravitee.el.TemplateEngine;
+import io.gravitee.gateway.api.buffer.Buffer;
 import io.gravitee.gateway.api.http.HttpHeaders;
 import io.gravitee.gateway.reactive.api.ExecutionFailure;
-import io.gravitee.gateway.reactive.api.context.HttpExecutionContext;
-import io.gravitee.gateway.reactive.api.context.MessageExecutionContext;
+import io.gravitee.gateway.reactive.api.context.http.HttpMessageExecutionContext;
+import io.gravitee.gateway.reactive.api.context.http.HttpPlainExecutionContext;
+import io.gravitee.gateway.reactive.api.context.kafka.KafkaExecutionContext;
+import io.gravitee.gateway.reactive.api.context.kafka.KafkaMessageExecutionContext;
 import io.gravitee.gateway.reactive.api.message.Message;
-import io.gravitee.gateway.reactive.api.policy.Policy;
+import io.gravitee.gateway.reactive.api.message.kafka.KafkaMessage;
+import io.gravitee.gateway.reactive.api.policy.http.HttpPolicy;
+import io.gravitee.gateway.reactive.api.policy.kafka.KafkaPolicy;
+import io.gravitee.policy.transformheaders.configuration.HttpHeader;
 import io.gravitee.policy.transformheaders.configuration.TransformHeadersPolicyConfiguration;
 import io.gravitee.policy.transformheaders.v3.TransformHeadersPolicyV3;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Maybe;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.function.BiFunction;
+import org.apache.kafka.common.protocol.Errors;
 
 /**
  * @author Guillaume Lamirand (guillaume.lamirand at graviteesource.com)
  * @author GraviteeSource Team
  */
-public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements Policy {
+public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements HttpPolicy, KafkaPolicy {
 
     private static final String TRANSFORM_HEADERS_FAILURE = "TRANSFORM_HEADERS_FAILURE";
 
@@ -46,16 +56,16 @@ public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements 
     }
 
     @Override
-    public Completable onRequest(HttpExecutionContext ctx) {
+    public Completable onRequest(HttpPlainExecutionContext ctx) {
         return Completable.defer(() -> transform(ctx, ctx.request().headers()));
     }
 
     @Override
-    public Completable onResponse(HttpExecutionContext ctx) {
+    public Completable onResponse(HttpPlainExecutionContext ctx) {
         return Completable.defer(() -> transform(ctx, ctx.response().headers()));
     }
 
-    private Completable transform(final HttpExecutionContext ctx, final HttpHeaders httpHeaders) {
+    private Completable transform(final HttpPlainExecutionContext ctx, final HttpHeaders httpHeaders) {
         return transformHeaders(ctx.getTemplateEngine(), httpHeaders)
             .onErrorResumeWith(
                 ctx.interruptWith(
@@ -65,16 +75,16 @@ public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements 
     }
 
     @Override
-    public Completable onMessageRequest(MessageExecutionContext ctx) {
+    public Completable onMessageRequest(HttpMessageExecutionContext ctx) {
         return ctx.request().onMessage(message -> transformMessageHeaders(ctx, message));
     }
 
     @Override
-    public Completable onMessageResponse(MessageExecutionContext ctx) {
+    public Completable onMessageResponse(HttpMessageExecutionContext ctx) {
         return ctx.response().onMessage(message -> transformMessageHeaders(ctx, message));
     }
 
-    private Maybe<Message> transformMessageHeaders(final MessageExecutionContext ctx, final Message message) {
+    private Maybe<Message> transformMessageHeaders(final HttpMessageExecutionContext ctx, final Message message) {
         return transformHeaders(ctx.getTemplateEngine(message), message.headers())
             .andThen(Maybe.just(message))
             .onErrorResumeWith(
@@ -85,33 +95,68 @@ public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements 
     }
 
     private Completable transformHeaders(final TemplateEngine templateEngine, final HttpHeaders httpHeaders) {
-        return setHeaders(templateEngine, httpHeaders)
+        return addHeaders(templateEngine, httpHeaders)
             .andThen(appendHeaders(templateEngine, httpHeaders))
             .andThen(Completable.fromRunnable(() -> removeHeaders(httpHeaders)));
     }
 
-    private Completable setHeaders(final TemplateEngine templateEngine, final HttpHeaders httpHeaders) {
-        return Maybe
-            .fromCallable(configuration::getAddHeaders)
-            .flatMapPublisher(Flowable::fromIterable)
-            .filter(httpHeader -> httpHeader.getName() != null && !httpHeader.getName().trim().isEmpty() && httpHeader.getValue() != null)
-            .flatMapCompletable(httpHeader ->
-                templateEngine
-                    .eval(httpHeader.getValue(), String.class)
-                    .doOnSuccess(newValue -> httpHeaders.set(httpHeader.getName(), newValue))
-                    .ignoreElement()
-            );
+    private Completable addHeaders(final TemplateEngine templateEngine, final HttpHeaders httpHeaders) {
+        return updateHeaders(
+            configuration::getAddHeaders,
+            templateEngine,
+            (key, value) -> Optional.ofNullable(httpHeaders).map(h -> h.set(key, value)).orElse(null)
+        );
     }
 
     private Completable appendHeaders(final TemplateEngine templateEngine, final HttpHeaders httpHeaders) {
+        return updateHeaders(
+            configuration::getAppendHeaders,
+            templateEngine,
+            (key, value) -> Optional.ofNullable(httpHeaders).map(h -> h.add(key, value)).orElse(null)
+        );
+    }
+
+    @Override
+    public Completable onMessageRequest(KafkaMessageExecutionContext ctx) {
+        return ctx.request().onMessage(message -> transformKafkaMessageHeaders(ctx.executionContext(), message));
+    }
+
+    @Override
+    public Completable onMessageResponse(KafkaMessageExecutionContext ctx) {
+        return ctx.response().onMessage(message -> transformKafkaMessageHeaders(ctx.executionContext(), message));
+    }
+
+    private Maybe<KafkaMessage> transformKafkaMessageHeaders(KafkaExecutionContext ctx, KafkaMessage kafkaMessage) {
+        return transformHeaders(ctx.getTemplateEngine(), kafkaMessage)
+            .onErrorResumeWith(ctx.interruptWith(Errors.INVALID_RECORD))
+            .andThen(Maybe.just(kafkaMessage));
+    }
+
+    private Completable transformHeaders(final TemplateEngine templateEngine, final KafkaMessage message) {
+        return addHeaders(templateEngine, message).andThen(Completable.fromRunnable(() -> removeHeaders(message)));
+    }
+
+    private Completable addHeaders(final TemplateEngine templateEngine, final KafkaMessage message) {
+        return updateHeaders(
+            configuration::getAddHeaders,
+            templateEngine,
+            (key, value) -> message.putRecordHeader(key, Buffer.buffer(value))
+        );
+    }
+
+    private Completable updateHeaders(
+        Callable<List<HttpHeader>> configurationHeaders,
+        final TemplateEngine templateEngine,
+        BiFunction<String, String, ?> updateHeaders
+    ) {
         return Maybe
-            .fromCallable(configuration::getAppendHeaders)
+            .fromCallable(configurationHeaders)
             .flatMapPublisher(Flowable::fromIterable)
             .filter(httpHeader -> httpHeader.getName() != null && !httpHeader.getName().trim().isEmpty() && httpHeader.getValue() != null)
             .flatMapCompletable(httpHeader ->
                 templateEngine
                     .eval(httpHeader.getValue(), String.class)
-                    .doOnSuccess(newValue -> httpHeaders.add(httpHeader.getName(), newValue))
+                    .doOnSuccess(newValue -> updateHeaders.apply(httpHeader.getName(), newValue))
                     .ignoreElement()
             );
     }

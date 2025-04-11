@@ -27,6 +27,7 @@ import io.gravitee.gateway.api.http.HttpHeaders;
 import io.gravitee.gateway.api.stream.BufferedReadWriteStream;
 import io.gravitee.gateway.api.stream.ReadWriteStream;
 import io.gravitee.gateway.api.stream.SimpleReadWriteStream;
+import io.gravitee.gateway.reactive.api.message.kafka.KafkaMessage;
 import io.gravitee.policy.api.PolicyChain;
 import io.gravitee.policy.api.annotations.OnRequest;
 import io.gravitee.policy.api.annotations.OnRequestContent;
@@ -229,6 +230,30 @@ public class TransformHeadersPolicyV3 {
         headersToRemove.forEach(headerName -> {
             if (headerName != null && !headerName.trim().isEmpty()) {
                 httpHeaders.remove(headerName);
+            }
+        });
+    }
+
+    protected void removeHeaders(final KafkaMessage kafkaMessage) {
+        List<String> headersToRemove = configuration.getRemoveHeaders() == null
+            ? new ArrayList<>()
+            : new ArrayList<>(configuration.getRemoveHeaders());
+
+        if (configuration.getWhitelistHeaders() != null && !configuration.getWhitelistHeaders().isEmpty()) {
+            kafkaMessage
+                .recordHeaders()
+                .keySet()
+                .forEach(headerName -> {
+                    if (configuration.getWhitelistHeaders().stream().noneMatch(headerName::equalsIgnoreCase)) {
+                        headersToRemove.add(headerName);
+                    }
+                });
+        }
+
+        // Remove request headers
+        headersToRemove.forEach(headerName -> {
+            if (headerName != null && !headerName.trim().isEmpty()) {
+                kafkaMessage.removeRecordHeader(headerName);
             }
         });
     }

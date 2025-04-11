@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/3.0.2...3.1.0) (2025-04-11)
+
+
+### Features
+
+* add append header support ([da55073](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/da55073e6130d868658310cd1b8e019b11201d8b))
+
 ## [3.0.2](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/3.0.1...3.0.2) (2023-11-13)
 
 

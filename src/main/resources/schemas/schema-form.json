@@ -65,7 +65,7 @@
         "appendHeaders": {
             "type": "array",
             "title": "Append headers",
-            "description": "Similar to set / Replace headers, but the values will be appended instead of being replaced if a header with the same name is already defined in the request. Multiple entries can be used to append several values to the same header name.",
+            "description": "Similar to set / Replace headers, but the values will be appended instead of being replaced if a header with the same name is already defined in the request. Multiple entries can be used to append several values to the same header name",
             "items": {
                 "type": "object",
                 "title": "Header",
@@ -91,12 +91,7 @@
                 "required": ["name", "value"]
             },
             "gioConfig": {
-                "uiType": "gio-headers-array",
-                "displayIf": {
-                    "$eq": {
-                        "context.apiType": ["MESSAGE", "PROXY"]
-                    }
-                }
+                "uiType": "gio-headers-array"
             }
         }
     }

@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/3.1.0...3.2.0) (2025-04-16)
+
+
+### Features
+
+* handle KafkaPolicy on message request and response ([1002fe1](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/1002fe1330db81cf603f40be4d0d54bb671f9197))
+
 # [3.1.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/3.0.2...3.1.0) (2025-04-11)
 
 

@@ -1,3 +1,10 @@
+## [3.2.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/3.2.0...3.2.1) (2025-04-16)
+
+
+### Bug Fixes
+
+* revert BC commit -- "feat: handle KafkaPolicy on message request and response" ([855b5c2](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/855b5c2d83cf135f6893e359b20d3cfebf5c93d1))
+
 # [3.2.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/3.1.0...3.2.0) (2025-04-16)
 
 

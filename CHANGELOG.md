@@ -1,3 +1,15 @@
+# [4.0.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/3.2.1...4.0.0) (2025-04-17)
+
+
+### Features
+
+* handle KafkaPolicy on message request and response ([6c17501](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/6c17501578ae8e14ef91b5ebf2adbb2c512d6dd7))
+
+
+### BREAKING CHANGES
+
+* requires APIM version 4.6.0 or later
+
 ## [3.2.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/3.2.0...3.2.1) (2025-04-16)
 
 

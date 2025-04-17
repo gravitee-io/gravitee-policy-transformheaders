@@ -40,7 +40,7 @@
         <gravitee-reactor-message.version>5.0.1</gravitee-reactor-message.version>
 
         <maven-plugin-assembly.version>3.7.1</maven-plugin-assembly.version>
-        <maven-plugin-properties.version>1.2.0</maven-plugin-properties.version>
+        <maven-plugin-properties.version>1.2.1</maven-plugin-properties.version>
 
         <publish-folder-path>graviteeio-apim/plugins/policies</publish-folder-path>
     </properties>

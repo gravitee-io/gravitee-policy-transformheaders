@@ -1,0 +1,3 @@
+{
+    "whitelistHeaders": ["X-Gravitee-Transaction-Id", "Content-Type", "Content-Length", "Connection"]
+}

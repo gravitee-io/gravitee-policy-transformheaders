@@ -2,6 +2,35 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "additionalProperties": false,
+    "definitions": {
+        "_header": {
+            "type": "object",
+            "title": "Header",
+            "properties": {
+                "name": {
+                    "title": "Name",
+                    "description": "Name of the header",
+                    "type": "string",
+                    "pattern": "^\\S*$",
+                    "validationMessage": {
+                        "202": "Header name must not contain spaces."
+                    }
+                },
+                "value": {
+                    "title": "Value",
+                    "description": "Value of the header",
+                    "type": "string",
+                    "x-schema-form": {
+                        "expression-language": true
+                    },
+                    "gioConfig": {
+                        "el": true
+                    }
+                }
+            },
+            "required": ["name", "value"]
+        }
+    },
     "properties": {
         "scope": {
             "title": "Scope",
@@ -9,7 +38,7 @@
             "type": "string",
             "default": "REQUEST",
             "enum": ["REQUEST", "RESPONSE", "REQUEST_CONTENT", "RESPONSE_CONTENT"],
-            "deprecated": "true"
+            "deprecated": true
         },
         "removeHeaders": {
             "type": "array",
@@ -32,31 +61,10 @@
         },
         "addHeaders": {
             "type": "array",
-            "title": "Set / Replace headers",
-            "description": "Values defined here will be replaced if a header with the same name is already defined in the request.",
+            "title": "Set/replace headers",
+            "description": "Values defined here will replace existing values if a header with the same name is already defined in the request.",
             "items": {
-                "type": "object",
-                "title": "Header",
-                "properties": {
-                    "name": {
-                        "title": "Name",
-                        "description": "Name of the header",
-                        "type": "string",
-                        "pattern": "^\\S*$",
-                        "validationMessage": {
-                            "202": "Header name must not contain spaces."
-                        }
-                    },
-                    "value": {
-                        "title": "Value",
-                        "description": "Value of the header",
-                        "type": "string",
-                        "x-schema-form": {
-                            "expression-language": true
-                        }
-                    }
-                },
-                "required": ["name", "value"]
+                "$ref": "#/definitions/_header"
             },
             "gioConfig": {
                 "uiType": "gio-headers-array"
@@ -67,28 +75,7 @@
             "title": "Append headers",
             "description": "Similar to set / Replace headers, but the values will be appended instead of being replaced if a header with the same name is already defined in the request. Multiple entries can be used to append several values to the same header name.",
             "items": {
-                "type": "object",
-                "title": "Header",
-                "properties": {
-                    "name": {
-                        "title": "Name",
-                        "description": "Name of the header",
-                        "type": "string",
-                        "pattern": "^\\S*$",
-                        "validationMessage": {
-                            "202": "Header name must not contain spaces."
-                        }
-                    },
-                    "value": {
-                        "title": "Value",
-                        "description": "Value of the header",
-                        "type": "string",
-                        "x-schema-form": {
-                            "expression-language": true
-                        }
-                    }
-                },
-                "required": ["name", "value"]
+                "$ref": "#/definitions/_header"
             },
             "gioConfig": {
                 "uiType": "gio-headers-array",

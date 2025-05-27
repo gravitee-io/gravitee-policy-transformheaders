@@ -1,0 +1,15 @@
+{
+    "addHeaders": [
+        {
+            "name": "X-Gravitee-Request-Id",
+            "value": "{#request.id}"
+        }
+    ],
+    "appendHeaders": [
+        {
+            "name": "Accept-Encoding",
+            "value": "gzip"
+        }
+    ],
+    "removeHeaders": ["User-Agent"]
+}

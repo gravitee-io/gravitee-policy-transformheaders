@@ -1,0 +1,9 @@
+{
+    "addHeaders": [
+        {
+            "name": "X-Product-Id",
+            "value": "{#jsonPath(#request.content, '$.product.id')}"
+        }
+    ],
+    "scope": "REQUEST_CONTENT"
+}

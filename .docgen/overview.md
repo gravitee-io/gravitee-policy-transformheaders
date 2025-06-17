@@ -9,6 +9,6 @@ Header transformations are executed in the following order:
 3. Remove headers
 4. Keep only whitelisted headers
 
-### Removal
+### Header removal
 * Headers added/appended by this policy can be removed
 * Whitelisting applies to headers added/appended by this policy

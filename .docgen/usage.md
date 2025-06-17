@@ -38,7 +38,7 @@ X-Extra: Superfluous
 Content-Type: */*
 ```
 
-### Remove headers
+### Header removal
 
 Given the following headers:
 ```

@@ -275,6 +275,15 @@ spec:
 
 ## Changelog
 
+#### [4.0.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.0.0...4.0.1) (2025-06-17)
+
+
+##### Bug Fixes
+
+* last review changes and orb for docgen ([14b17bf](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/14b17bf09d198ac6485e3ef0602b8c8d54ac8263))
+* rewrite docs with doc-gen ([050c79d](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/050c79d8c1c060e6d5da50cd5abb7501a67c1693))
+* update dependencies and orbs ([443ae8d](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/443ae8d62e2eaa8c0074c5a26ef4515ca1266adf))
+
 ### [4.0.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/3.2.1...4.0.0) (2025-04-17)
 
 

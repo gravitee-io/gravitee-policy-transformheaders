@@ -118,17 +118,17 @@ public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements 
 
     @Override
     public Completable onMessageRequest(KafkaMessageExecutionContext ctx) {
-        return ctx.request().onMessage(message -> transformKafkaMessageHeaders(ctx.executionContext(), message));
+        return ctx.request().onMessage(message -> transformKafkaMessageHeaders(ctx, message));
     }
 
     @Override
     public Completable onMessageResponse(KafkaMessageExecutionContext ctx) {
-        return ctx.response().onMessage(message -> transformKafkaMessageHeaders(ctx.executionContext(), message));
+        return ctx.response().onMessage(message -> transformKafkaMessageHeaders(ctx, message));
     }
 
-    private Maybe<KafkaMessage> transformKafkaMessageHeaders(KafkaExecutionContext ctx, KafkaMessage kafkaMessage) {
-        return transformHeaders(ctx.getTemplateEngine(), kafkaMessage)
-            .onErrorResumeWith(ctx.interruptWith(Errors.INVALID_RECORD))
+    private Maybe<KafkaMessage> transformKafkaMessageHeaders(KafkaMessageExecutionContext ctx, KafkaMessage kafkaMessage) {
+        return transformHeaders(ctx.getTemplateEngine(kafkaMessage), kafkaMessage)
+            .onErrorResumeWith(ctx.executionContext().interruptWith(Errors.INVALID_RECORD))
             .andThen(Maybe.just(kafkaMessage));
     }
 

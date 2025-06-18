@@ -1,3 +1,10 @@
+## [4.0.2](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.0.1...4.0.2) (2025-06-18)
+
+
+### Bug Fixes
+
+* allow message to be used in EL ([bff1dd4](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/bff1dd4d4e3e7149e56def225d458ebf43f962be))
+
 ## [4.0.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.0.0...4.0.1) (2025-06-17)
 
 

@@ -19,3 +19,9 @@ rawExamples:
       properties:
           phase: subscribe
       file: .docgen/examples/all-options.json
+    - title: Native Kafka API CRD
+      templateRef: v4-api-crd-kafka-native
+      language: json
+      properties:
+          phase: subscribe
+      file: .docgen/examples/all-options-kafka-native.json

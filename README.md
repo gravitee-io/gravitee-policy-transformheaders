@@ -23,6 +23,14 @@ Header transformations are executed in the following order:
 * Headers added/appended by this policy can be removed
 * Whitelisting applies to headers added/appended by this policy
 
+### Native Kafka API Support
+For Native Kafka APIs, the transform-headers policy operates on Kafka record headers instead of HTTP headers. 
+
+**Key differences for Native Kafka APIs:**
+* Headers are stored as Kafka record headers
+* Header values are stored as Kafka `Buffer` objects
+* Append headers functionality is **not supported** for Native Kafka APIs
+
 
 
 ## Usage
@@ -100,6 +108,56 @@ Then headers are transformed as follows:
 ```
 Content-Type: */*
 ```
+
+### Native Kafka API Usage
+
+For Native Kafka APIs, the transform-headers policy works with Kafka record headers instead of HTTP headers. Here are examples for both publish and subscribe phases:
+
+#### Publish Phase Example
+
+Given the following Kafka record headers:
+```
+X-Correlation-Id: abc-123
+X-Internal-Header: debug-info
+```
+
+When applying 'set/replace' with:
+* `X-Gravitee-Request-Id` and value `{#request.id}`
+* `X-Source-System` and value `api-gateway`
+
+And removing:
+* `X-Internal-Header`
+
+Then headers are transformed as follows:
+```
+X-Correlation-Id: abc-123
+X-Gravitee-Request-Id: req-456
+X-Source-System: api-gateway
+```
+
+#### Subscribe Phase Example
+
+Given the following Kafka record headers:
+```
+X-Correlation-Id: abc-123
+X-Debug-Header: debug-info
+Content-Type: application/json
+```
+
+When applying 'set/replace' with:
+* `X-Processing-Timestamp` and value `{#date.now()}`
+
+And removing:
+* `X-Debug-Header`
+
+Then headers are transformed as follows:
+```
+X-Correlation-Id: abc-123
+X-Processing-Timestamp: 2024-01-15T10:30:00Z
+Content-Type: application/json
+```
+
+**Note:** Append headers functionality is not supported for Native Kafka APIs.
 
 
 
@@ -269,6 +327,36 @@ spec:
                     value: gzip
               removeHeaders:
                   - User-Agent
+
+```
+*Native Kafka API CRD*
+```yaml
+apiVersion: "gravitee.io/v1alpha1"
+kind: "ApiV4Definition"
+metadata:
+    name: "transform-headers-kafka-native-api-crd"
+spec:
+    name: "Transform Headers example"
+    type: "NATIVE"
+    flows:
+      - name: "Common Flow"
+        enabled: true
+        selectors:
+            matchRequired: false
+            mode: "DEFAULT"
+        subscribe:
+          - name: "Transform Headers"
+            enabled: true
+            policy: "transform-headers"
+            configuration:
+              addHeaders:
+                  - name: X-Gravitee-Request-Id
+                    value: '{#request.id}'
+              removeHeaders:
+                  - X-Internal-Header
+              whitelistHeaders:
+                  - X-Internal-Metadata
+                  - X-Debug-Header
 
 ```
 

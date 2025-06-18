@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.0.2...4.1.0) (2025-06-18)
+
+
+### Features
+
+* add Kafka usage to docgen documentation ([439ad7a](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/439ad7a172241e233f341455b23da2590035e47a))
+
 ## [4.0.2](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.0.1...4.0.2) (2025-06-18)
 
 

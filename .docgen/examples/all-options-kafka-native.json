@@ -1,0 +1,10 @@
+{
+    "addHeaders": [
+        {
+            "name": "X-Gravitee-Request-Id",
+            "value": "{#request.id}"
+        }
+    ],
+    "removeHeaders": ["X-Internal-Header"],
+    "whitelistHeaders": ["X-Internal-Metadata", "X-Debug-Header"]
+}

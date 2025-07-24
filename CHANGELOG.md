@@ -1,3 +1,10 @@
+## [4.1.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.1.0...4.1.1) (2025-07-24)
+
+
+### Bug Fixes
+
+* revert schema-form.json ref part for v2 and v4 to resolve Transform Headers UI issue ([65a780c](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/65a780c6e9ed8874ceea4490895e2927f546c230))
+
 # [4.1.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.0.2...4.1.0) (2025-06-18)
 
 

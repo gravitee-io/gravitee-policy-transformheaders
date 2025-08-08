@@ -363,6 +363,13 @@ spec:
 
 ## Changelog
 
+#### [4.1.3](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.1.2...4.1.3) (2025-08-08)
+
+
+##### Bug Fixes
+
+* **deps:** bump gravitee-apim to 4.6.17 ([08b2ca0](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/08b2ca0b4cd078393a9b353b2acd03f94da47f10))
+
 #### [4.1.2](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.1.1...4.1.2) (2025-07-24)
 
 

@@ -59,7 +59,10 @@
                 "required": ["name", "value"]
             },
             "gioConfig": {
-                "uiType": "gio-headers-array"
+                "uiType": "gio-headers-array",
+                "uiTypeProps": {
+                    "elColumns": "value"
+                }
             }
         },
         "appendHeaders": {
@@ -92,6 +95,9 @@
             },
             "gioConfig": {
                 "uiType": "gio-headers-array",
+                "uiTypeProps": {
+                    "elColumns": "value"
+                },
                 "displayIf": {
                     "$eq": {
                         "context.apiType": ["MESSAGE", "PROXY"]

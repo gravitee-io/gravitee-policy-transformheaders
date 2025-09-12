@@ -69,5 +69,8 @@
                 }
             ]
         }
-    ]
+    ],
+    "analytics": {
+        "enabled": true
+    }
 }

@@ -67,9 +67,12 @@ public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements 
 
     private Completable transform(final HttpPlainExecutionContext ctx, final HttpHeaders httpHeaders) {
         return transformHeaders(ctx.getTemplateEngine(), httpHeaders)
-            .onErrorResumeWith(
+            .onErrorResumeNext(throwable ->
                 ctx.interruptWith(
-                    new ExecutionFailure(500).key(TRANSFORM_HEADERS_FAILURE).message("Unable to apply headers transformation")
+                    new ExecutionFailure(500)
+                        .key(TRANSFORM_HEADERS_FAILURE)
+                        .message("Unable to apply headers transformation")
+                        .cause(throwable)
                 )
             );
     }
@@ -87,9 +90,12 @@ public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements 
     private Maybe<Message> transformMessageHeaders(final HttpMessageExecutionContext ctx, final Message message) {
         return transformHeaders(ctx.getTemplateEngine(message), message.headers())
             .andThen(Maybe.just(message))
-            .onErrorResumeWith(
+            .onErrorResumeNext(throwable ->
                 ctx.interruptMessageWith(
-                    new ExecutionFailure(500).key(TRANSFORM_HEADERS_FAILURE).message("Unable to apply headers transformation on message")
+                    new ExecutionFailure(500)
+                        .key(TRANSFORM_HEADERS_FAILURE)
+                        .message("Unable to apply headers transformation on message")
+                        .cause(throwable)
                 )
             );
     }

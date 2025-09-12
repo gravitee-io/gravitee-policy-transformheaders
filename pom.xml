@@ -22,7 +22,7 @@
 
     <groupId>io.gravitee.policy</groupId>
     <artifactId>gravitee-policy-transformheaders</artifactId>
-    <version>4.2.0</version>
+    <version>5.0.0-alpha.1</version>
 
     <name>Gravitee.io APIM - Policy - Transform Headers</name>
     <description>Override HTTP headers of incoming request or outbound response</description>
@@ -34,12 +34,11 @@
     </parent>
 
     <properties>
-        <gravitee-apim.version>4.6.17</gravitee-apim.version>
+        <gravitee-apim.version>4.9.0-alpha.2-SNAPSHOT</gravitee-apim.version>
         <gravitee-sse.version>5.0.0</gravitee-sse.version>
         <gravitee-http-post.version>2.1.0</gravitee-http-post.version>
-        <gravitee-reactor-message.version>5.0.2</gravitee-reactor-message.version>
+        <gravitee-reactor-message.version>8.0.0-alpha.2</gravitee-reactor-message.version>
 
-        <maven-plugin-assembly.version>3.7.1</maven-plugin-assembly.version>
         <maven-plugin-properties.version>1.2.1</maven-plugin-properties.version>
 
         <publish-folder-path>graviteeio-apim/plugins/policies</publish-folder-path>
@@ -214,7 +213,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>${maven-plugin-assembly.version}</version>
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>

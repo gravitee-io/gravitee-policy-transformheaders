@@ -1,3 +1,10 @@
+# [4.2.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.1.3...4.2.0) (2025-09-16)
+
+
+### Features
+
+* add EL assistant on el field ([aaf1756](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/aaf1756c3c0c487a8af2f31a1a175e2fecd0004d))
+
 ## [4.1.3](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.1.2...4.1.3) (2025-08-08)
 
 

@@ -364,6 +364,18 @@ spec:
 
 ## Changelog
 
+### [5.0.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.2.0...5.0.0) (2025-09-17)
+
+
+##### Features
+
+* include cause throwable in the execution failure ([e5f45da](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/e5f45da9203a5fc7d9378d2584c07f33a315e5e8))
+
+
+##### BREAKING CHANGES
+
+* requires APIM version 4.9.0 or later
+
 ### [4.2.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.1.3...4.2.0) (2025-09-16)
 
 

@@ -66,15 +66,11 @@ public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements 
     }
 
     private Completable transform(final HttpPlainExecutionContext ctx, final HttpHeaders httpHeaders) {
-        return transformHeaders(ctx.getTemplateEngine(), httpHeaders)
-            .onErrorResumeNext(throwable ->
-                ctx.interruptWith(
-                    new ExecutionFailure(500)
-                        .key(TRANSFORM_HEADERS_FAILURE)
-                        .message("Unable to apply headers transformation")
-                        .cause(throwable)
-                )
-            );
+        return transformHeaders(ctx.getTemplateEngine(), httpHeaders).onErrorResumeNext(throwable ->
+            ctx.interruptWith(
+                new ExecutionFailure(500).key(TRANSFORM_HEADERS_FAILURE).message("Unable to apply headers transformation").cause(throwable)
+            )
+        );
     }
 
     @Override
@@ -107,18 +103,18 @@ public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements 
     }
 
     private Completable addHeaders(final TemplateEngine templateEngine, final HttpHeaders httpHeaders) {
-        return updateHeaders(
-            configuration::getAddHeaders,
-            templateEngine,
-            (key, value) -> Optional.ofNullable(httpHeaders).map(h -> h.set(key, value)).orElse(null)
+        return updateHeaders(configuration::getAddHeaders, templateEngine, (key, value) ->
+            Optional.ofNullable(httpHeaders)
+                .map(h -> h.set(key, value))
+                .orElse(null)
         );
     }
 
     private Completable appendHeaders(final TemplateEngine templateEngine, final HttpHeaders httpHeaders) {
-        return updateHeaders(
-            configuration::getAppendHeaders,
-            templateEngine,
-            (key, value) -> Optional.ofNullable(httpHeaders).map(h -> h.add(key, value)).orElse(null)
+        return updateHeaders(configuration::getAppendHeaders, templateEngine, (key, value) ->
+            Optional.ofNullable(httpHeaders)
+                .map(h -> h.add(key, value))
+                .orElse(null)
         );
     }
 
@@ -143,10 +139,8 @@ public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements 
     }
 
     private Completable addHeaders(final TemplateEngine templateEngine, final KafkaMessage message) {
-        return updateHeaders(
-            configuration::getAddHeaders,
-            templateEngine,
-            (key, value) -> message.putRecordHeader(key, Buffer.buffer(value))
+        return updateHeaders(configuration::getAddHeaders, templateEngine, (key, value) ->
+            message.putRecordHeader(key, Buffer.buffer(value))
         );
     }
 
@@ -155,8 +149,7 @@ public class TransformHeadersPolicy extends TransformHeadersPolicyV3 implements 
         final TemplateEngine templateEngine,
         BiFunction<String, String, ?> updateHeaders
     ) {
-        return Maybe
-            .fromCallable(configurationHeaders)
+        return Maybe.fromCallable(configurationHeaders)
             .flatMapPublisher(Flowable::fromIterable)
             .filter(httpHeader -> httpHeader.getName() != null && !httpHeader.getName().trim().isEmpty() && httpHeader.getValue() != null)
             .flatMapCompletable(httpHeader ->

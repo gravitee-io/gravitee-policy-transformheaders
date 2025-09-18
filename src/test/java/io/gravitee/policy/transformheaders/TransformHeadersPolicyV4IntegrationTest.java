@@ -93,15 +93,14 @@ class TransformHeadersPolicyV4IntegrationTest extends AbstractPolicyTest<Transfo
     @DeployApi("/apis/add-update-whitelist-remove-headers-v4-proxy.json")
     void should_add_update_and_remove_headers_with_proxy_api(HttpClient client) throws InterruptedException {
         wiremock.stubFor(
-            get("/endpoint")
-                .willReturn(
-                    ok()
-                        .withHeader("toupdatekeyresponse", "responseToUpdate")
-                        .withHeader("toremovekeyresponse", "willBeRemoved")
-                        .withHeader("whitelistedkeyresponse", "whitelisted")
-                        .withHeader("notinwhitelistkeyresponse1", "excluded")
-                        .withHeader("notinwhitelistkeyresponse2", "excluded")
-                )
+            get("/endpoint").willReturn(
+                ok()
+                    .withHeader("toupdatekeyresponse", "responseToUpdate")
+                    .withHeader("toremovekeyresponse", "willBeRemoved")
+                    .withHeader("whitelistedkeyresponse", "whitelisted")
+                    .withHeader("notinwhitelistkeyresponse1", "excluded")
+                    .withHeader("notinwhitelistkeyresponse2", "excluded")
+            )
         );
 
         final TestObserver<HttpClientResponse> obs = client
@@ -242,20 +241,17 @@ class TransformHeadersPolicyV4IntegrationTest extends AbstractPolicyTest<Transfo
             .filter(buffer -> !buffer.toString().startsWith("retry:") && !buffer.toString().startsWith(":"))
             .test()
             .awaitCount(1)
-            .assertValueAt(
-                0,
-                chunk -> {
-                    final String[] splitMessage = chunk.toString().split("\n");
-                    assertThat(splitMessage).hasSize(6);
-                    assertThat(splitMessage[0]).isEqualTo("id: 0");
-                    assertThat(splitMessage[1]).isEqualTo("event: message");
-                    assertThat(splitMessage[2]).isEqualTo("data: { \"message\": \"hello\" }");
-                    assertThat(splitMessage[3]).isEqualTo(":whitelistedKeyResponse: whitelisted");
-                    assertThat(splitMessage[4]).isEqualTo(":headerKeyResponse: headerValue");
-                    assertThat(splitMessage[5]).isEqualTo(":toUpdateKeyResponse: updatedValue");
-                    return true;
-                }
-            );
+            .assertValueAt(0, chunk -> {
+                final String[] splitMessage = chunk.toString().split("\n");
+                assertThat(splitMessage).hasSize(6);
+                assertThat(splitMessage[0]).isEqualTo("id: 0");
+                assertThat(splitMessage[1]).isEqualTo("event: message");
+                assertThat(splitMessage[2]).isEqualTo("data: { \"message\": \"hello\" }");
+                assertThat(splitMessage[3]).isEqualTo(":whitelistedKeyResponse: whitelisted");
+                assertThat(splitMessage[4]).isEqualTo(":headerKeyResponse: headerValue");
+                assertThat(splitMessage[5]).isEqualTo(":toUpdateKeyResponse: updatedValue");
+                return true;
+            });
     }
 
     @Test
@@ -274,17 +270,14 @@ class TransformHeadersPolicyV4IntegrationTest extends AbstractPolicyTest<Transfo
             .filter(buffer -> !buffer.toString().startsWith("retry:") && !buffer.toString().startsWith(":"))
             .test()
             .awaitCount(1)
-            .assertValueAt(
-                0,
-                chunk -> {
-                    final String[] splitMessage = chunk.toString().split("\n");
-                    assertThat(splitMessage).hasSize(4);
-                    assertThat(splitMessage[0]).isEqualTo("id: 0");
-                    assertThat(splitMessage[1]).isEqualTo("event: message");
-                    assertThat(splitMessage[2]).isEqualTo("data: { \"message\": \"hello\" }");
-                    assertThat(splitMessage[3]).isEqualTo(":headerKeyResponse: headerValue0,headerValue1,headerValue2");
-                    return true;
-                }
-            );
+            .assertValueAt(0, chunk -> {
+                final String[] splitMessage = chunk.toString().split("\n");
+                assertThat(splitMessage).hasSize(4);
+                assertThat(splitMessage[0]).isEqualTo("id: 0");
+                assertThat(splitMessage[1]).isEqualTo("event: message");
+                assertThat(splitMessage[2]).isEqualTo("data: { \"message\": \"hello\" }");
+                assertThat(splitMessage[3]).isEqualTo(":headerKeyResponse: headerValue0,headerValue1,headerValue2");
+                return true;
+            });
     }
 }

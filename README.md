@@ -364,6 +364,13 @@ spec:
 
 ## Changelog
 
+#### [5.0.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/5.0.0...5.0.1) (2025-09-18)
+
+
+##### Bug Fixes
+
+* update apim to 4.9.0-alpha.2 ([47c996b](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/47c996b2ef306c6e679834f71eb77744a49826a9))
+
 ### [5.0.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.2.0...5.0.0) (2025-09-17)
 
 

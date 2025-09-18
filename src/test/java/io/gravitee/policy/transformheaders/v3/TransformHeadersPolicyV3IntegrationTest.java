@@ -42,15 +42,14 @@ class TransformHeadersPolicyV3IntegrationTest extends AbstractPolicyTest<Transfo
     @DisplayName("Should add, update, whitelist and remove headers")
     void shouldAddUpdateAndRemoveHeaders(HttpClient client) throws InterruptedException {
         wiremock.stubFor(
-            get("/endpoint")
-                .willReturn(
-                    ok()
-                        .withHeader("toupdatekeyresponse", "responseToUpdate")
-                        .withHeader("toremovekeyresponse", "willBeRemoved")
-                        .withHeader("whitelistedkeyresponse", "whitelisted")
-                        .withHeader("notinwhitelistkeyresponse1", "excluded")
-                        .withHeader("notinwhitelistkeyresponse2", "excluded")
-                )
+            get("/endpoint").willReturn(
+                ok()
+                    .withHeader("toupdatekeyresponse", "responseToUpdate")
+                    .withHeader("toremovekeyresponse", "willBeRemoved")
+                    .withHeader("whitelistedkeyresponse", "whitelisted")
+                    .withHeader("notinwhitelistkeyresponse1", "excluded")
+                    .withHeader("notinwhitelistkeyresponse2", "excluded")
+            )
         );
 
         final TestObserver<HttpClientResponse> obs = client

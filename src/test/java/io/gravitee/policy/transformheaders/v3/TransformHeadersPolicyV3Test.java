@@ -122,8 +122,9 @@ public class TransformHeadersPolicyV3Test {
     @Test
     void test_OnRequest_addHeader() {
         // Prepare
-        when(transformHeadersPolicyConfiguration.getAddHeaders())
-            .thenReturn(Collections.singletonList(new HttpHeader("X-Gravitee-Test", "Value")));
+        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(
+            Collections.singletonList(new HttpHeader("X-Gravitee-Test", "Value"))
+        );
 
         // Run
         transformHeadersPolicy.onRequest(request, response, executionContext, policyChain);
@@ -138,8 +139,9 @@ public class TransformHeadersPolicyV3Test {
         // Prepare
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
         when(transformHeadersPolicyConfiguration.getRemoveHeaders()).thenReturn(null);
-        when(transformHeadersPolicyConfiguration.getAddHeaders())
-            .thenReturn(Collections.singletonList(new HttpHeader("X-Gravitee-Test", "Value")));
+        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(
+            Collections.singletonList(new HttpHeader("X-Gravitee-Test", "Value"))
+        );
 
         // Run
         transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);
@@ -153,8 +155,9 @@ public class TransformHeadersPolicyV3Test {
     void test_OnResponse_addMultipleHeaders() {
         // Prepare
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
-        when(transformHeadersPolicyConfiguration.getAddHeaders())
-            .thenReturn(Arrays.asList(new HttpHeader("X-Gravitee-Header1", "Header1"), new HttpHeader("X-Gravitee-Header2", "Header2")));
+        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(
+            Arrays.asList(new HttpHeader("X-Gravitee-Header1", "Header1"), new HttpHeader("X-Gravitee-Header2", "Header2"))
+        );
 
         // Run
         transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);
@@ -168,8 +171,9 @@ public class TransformHeadersPolicyV3Test {
     @Test
     void test_OnRequest_addHeader_nullValue() {
         // Prepare
-        when(transformHeadersPolicyConfiguration.getAddHeaders())
-            .thenReturn(Collections.singletonList(new HttpHeader("X-Gravitee-Test", null)));
+        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(
+            Collections.singletonList(new HttpHeader("X-Gravitee-Test", null))
+        );
 
         // Run
         transformHeadersPolicy.onRequest(request, response, executionContext, policyChain);
@@ -183,8 +187,9 @@ public class TransformHeadersPolicyV3Test {
     void test_OnResponse_addHeader_nullValue() {
         // Prepare
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
-        when(transformHeadersPolicyConfiguration.getAddHeaders())
-            .thenReturn(Collections.singletonList(new HttpHeader("X-Gravitee-Test", null)));
+        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(
+            Collections.singletonList(new HttpHeader("X-Gravitee-Test", null))
+        );
 
         // Run
         transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);
@@ -225,8 +230,9 @@ public class TransformHeadersPolicyV3Test {
     void test_OnRequest_updateHeader() {
         // Prepare
         requestHttpHeaders.set("X-Gravitee-Test", "Initial");
-        when(transformHeadersPolicyConfiguration.getAddHeaders())
-            .thenReturn(Collections.singletonList(new HttpHeader("X-Gravitee-Test", "Value")));
+        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(
+            Collections.singletonList(new HttpHeader("X-Gravitee-Test", "Value"))
+        );
 
         // Run
         transformHeadersPolicy.onRequest(request, response, executionContext, policyChain);
@@ -241,8 +247,9 @@ public class TransformHeadersPolicyV3Test {
         // Prepare
         responseHttpHeaders.set("X-Gravitee-Test", "Initial");
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE);
-        when(transformHeadersPolicyConfiguration.getAddHeaders())
-            .thenReturn(Collections.singletonList(new HttpHeader("X-Gravitee-Test", "Value")));
+        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(
+            Collections.singletonList(new HttpHeader("X-Gravitee-Test", "Value"))
+        );
 
         // Run
         transformHeadersPolicy.onResponse(request, response, executionContext, policyChain);
@@ -384,8 +391,9 @@ public class TransformHeadersPolicyV3Test {
     @Test
     void test_OnRequestContent_addHeader() {
         // Prepare
-        when(transformHeadersPolicyConfiguration.getAddHeaders())
-            .thenReturn(Collections.singletonList(new HttpHeader("X-Product-Id", "{#jsonPath(#request.content, '$.product.id')}")));
+        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(
+            Collections.singletonList(new HttpHeader("X-Product-Id", "{#jsonPath(#request.content, '$.product.id')}"))
+        );
 
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.REQUEST_CONTENT);
         when(executionContext.getTemplateEngine()).thenReturn(TemplateEngine.templateEngine());
@@ -404,8 +412,9 @@ public class TransformHeadersPolicyV3Test {
     @Test
     void test_OnResponseContent_addHeader() {
         // Prepare
-        when(transformHeadersPolicyConfiguration.getAddHeaders())
-            .thenReturn(Collections.singletonList(new HttpHeader("X-Product-Id", "{#jsonPath(#response.content, '$.product.id')}")));
+        when(transformHeadersPolicyConfiguration.getAddHeaders()).thenReturn(
+            Collections.singletonList(new HttpHeader("X-Product-Id", "{#jsonPath(#response.content, '$.product.id')}"))
+        );
 
         when(transformHeadersPolicyConfiguration.getScope()).thenReturn(PolicyScope.RESPONSE_CONTENT);
         when(executionContext.getTemplateEngine()).thenReturn(TemplateEngine.templateEngine());

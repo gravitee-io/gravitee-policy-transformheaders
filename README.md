@@ -364,6 +364,13 @@ spec:
 
 ## Changelog
 
+#### [5.0.2](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/5.0.1...5.0.2) (2025-09-19)
+
+
+##### Bug Fixes
+
+* update gravitee-parent to 23.5.0 ([1930535](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/1930535d25800b2d85b0ce88c138f7f3ddabd11c))
+
 #### [5.0.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/5.0.0...5.0.1) (2025-09-18)
 
 

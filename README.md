@@ -169,13 +169,14 @@ The `transform-headers` policy can be applied to the following API types and flo
 * `PROXY`
 * `MESSAGE`
 * `NATIVE KAFKA`
+* `MCP PROXY`
 
 ### Supported flow phases:
 
-* Publish
-* Subscribe
 * Request
 * Response
+* Publish
+* Subscribe
 
 ## Compatibility matrix
 Strikethrough text indicates that a version is deprecated.

@@ -170,6 +170,7 @@ The `transform-headers` policy can be applied to the following API types and flo
 * `MESSAGE`
 * `NATIVE KAFKA`
 * `MCP PROXY`
+* `LLM PROXY`
 
 ### Supported flow phases:
 

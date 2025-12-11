@@ -1,3 +1,11 @@
+# [5.1.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/5.0.2...5.1.0) (2025-12-11)
+
+
+### Features
+
+* enable for LLM Proxy API ([8f08d01](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/8f08d01610bb2ca733ecb0674f16718d19c7c037))
+* enable for MCP Proxy API ([815a00e](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/815a00e2f593f8cf949f73144fd580f1cfc28b84))
+
 # [5.1.0-alpha.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/5.0.2...5.1.0-alpha.1) (2025-11-07)
 
 

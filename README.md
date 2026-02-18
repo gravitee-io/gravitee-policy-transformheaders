@@ -367,6 +367,13 @@ spec:
 
 ## Changelog
 
+### [5.2.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/5.1.0...5.2.0) (2026-02-18)
+
+
+##### Features
+
+* enable for A2A proxy ([35a4c67](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/35a4c670b356da010374162e0f420ae9a17f451e))
+
 ### [5.1.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/5.0.2...5.1.0) (2025-12-11)
 
 

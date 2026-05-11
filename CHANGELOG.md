@@ -1,3 +1,10 @@
+## [5.2.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/5.2.0...5.2.1) (2026-05-11)
+
+
+### Bug Fixes
+
+* **ci:** Updating the orb and added provided scope to deps ([8c9b1a4](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/8c9b1a438c4342ea135d56743ec4a01a0bbf8286))
+
 # [5.2.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/5.1.0...5.2.0) (2026-02-18)
 
 

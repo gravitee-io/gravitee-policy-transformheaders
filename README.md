@@ -363,6 +363,14 @@ spec:
 
 ## Changelog
 
+#### [4.2.1](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.2.0...4.2.1) (2026-05-11)
+
+
+##### Bug Fixes
+
+* **ci:** Updating the orb ([1699167](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/169916758ae1cc91d65d48ef20aadaacfd0168af))
+* **deps:** Adding provided scope to fix dependency management ([6e0d714](https://github.com/gravitee-io/gravitee-policy-transformheaders/commit/6e0d714735c8703307465e6054eb83056c255375))
+
 ### [4.2.0](https://github.com/gravitee-io/gravitee-policy-transformheaders/compare/4.1.3...4.2.0) (2025-09-16)
 
 

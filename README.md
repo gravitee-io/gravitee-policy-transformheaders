@@ -183,12 +183,12 @@ The `transform-headers` policy can be applied to the following API types and flo
 ## Compatibility matrix
 Strikethrough text indicates that a version is deprecated.
 
-| Plugin version| APIM |
-| --- | ---  |
-|5.x|4.9.x to latest |
-|4.x|4.6.x to 4.8.x |
-|3.x|4.0.x to 4.5.x |
-|~~1.x~~|~~3.x~~ |
+| Plugin version| APIM| Java version |
+| --- | --- | ---  |
+|5.x|4.9.x to latest|21 |
+|4.x|4.6.x to 4.8.x|17 |
+|3.x|4.0.x to 4.5.x|17 |
+|~~1.x~~|~~3.x~~|~~8~~ |
 
 
 ## Configuration options

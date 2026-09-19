@@ -2,13 +2,17 @@ rows:
     - data:
           plugin: "5.x"
           apim: "4.9.x to latest"
+          java: 21
     - data:
           plugin: "4.x"
           apim: "4.6.x to 4.8.x"
+          java: 17
     - data:
           plugin: "3.x"
           apim: "4.0.x to 4.5.x"
+          java: 17
     - data:
           plugin: "1.x"
           apim: "3.x"
+          java: 8
       deprecated: true
